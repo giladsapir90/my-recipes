@@ -219,6 +219,76 @@
   .step-text { font-size: 14px; color: var(--text); line-height: 1.72; flex: 1; padding-top: 4px; }
   .detail-footer { text-align: center; color: var(--light); font-size: 18px; margin-top: 32px; letter-spacing: 10px; }
 
+  /* ── Servings scaler ── */
+  .servings-bar {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--cream); border: 1.5px solid var(--border);
+    border-radius: 10px; padding: 10px 14px;
+    margin-bottom: 20px;
+  }
+  .servings-label { font-family: var(--ff); font-size: 13px; color: var(--brown); font-weight: 700; flex:1; }
+  .servings-count { font-family: var(--ff); font-size: 20px; font-weight: 900; color: var(--brown); min-width: 32px; text-align: center; }
+  .srv-btn {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--brown); color: #FFF9EE;
+    border: none; font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.15s; font-weight: 700; line-height:1;
+  }
+  .srv-btn:active { transform: scale(0.9); filter: brightness(0.85); }
+  .srv-btn:disabled { background: var(--light); color: var(--border); }
+  .ing-amount { color: var(--gold); font-weight: 700; }
+
+  /* ── Timer ── */
+  .step-timer-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(139,105,20,0.1); border: 1.5px solid var(--gold);
+    color: var(--gold); border-radius: 6px;
+    padding: 4px 10px; font-size: 12px; cursor: pointer;
+    font-family: var(--fb); margin-top: 6px; transition: all 0.2s;
+  }
+  .step-timer-btn:active { background: rgba(139,105,20,0.22); }
+  .step-timer-btn.running { background: var(--brown); color: #FFF9EE; border-color: var(--brown); }
+  .step-timer-btn.done { background: #3D6B45; color: #FFF9EE; border-color: #3D6B45; }
+
+  /* ── Timer overlay ── */
+  .timer-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.82);
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .timer-overlay.show { display: flex; }
+  .timer-box {
+    background: linear-gradient(160deg, var(--dark), var(--brown));
+    border: 3px solid var(--gold); border-radius: 24px;
+    padding: 36px 40px; text-align: center;
+    width: 88%; max-width: 320px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+    animation: modalIn 0.25s ease;
+  }
+  .timer-step-label { font-size: 12px; color: #C4A882; letter-spacing: 2px; margin-bottom: 10px; font-style: italic; }
+  .timer-display {
+    font-family: var(--ff); font-size: 72px; font-weight: 900;
+    color: #FFF9EE; letter-spacing: 4px; line-height: 1;
+    text-shadow: 0 0 30px rgba(139,105,20,0.6);
+    margin: 8px 0 24px;
+  }
+  .timer-display.urgent { color: #E8774A; animation: timerPulse 0.6s ease infinite; }
+  @keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+  .timer-btns { display: flex; gap: 12px; justify-content: center; }
+  .timer-action-btn {
+    padding: 12px 24px; border-radius: 10px; border: none;
+    font-family: var(--ff); font-size: 15px; cursor: pointer;
+    font-weight: 700; transition: all 0.18s; letter-spacing: 0.5px;
+  }
+  .timer-action-btn:active { transform: scale(0.95); }
+  .timer-action-btn.primary { background: var(--gold); color: #FFF9EE; }
+  .timer-action-btn.secondary { background: rgba(255,249,238,0.12); color: #FFF9EE; border: 1px solid rgba(255,249,238,0.3); }
+  .timer-progress { width: 100%; height: 5px; background: rgba(255,249,238,0.15); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+  .timer-progress-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.5s linear; }
+
   /* ── Form ── */
   .form-subhdr { display: flex; align-items: center; background: var(--dark); border-bottom: 2px solid var(--gold); padding: 0 13px; flex-shrink: 0; }
   .form-back-btn { background: transparent; border: none; color: #C4A882; padding: 12px 8px; cursor: pointer; font-family: var(--fb); font-size: 12px; }
@@ -416,6 +486,19 @@
 
 </div>
 
+<!-- ══════════ TIMER OVERLAY ══════════ -->
+<div class="timer-overlay" id="timer-overlay">
+  <div class="timer-box">
+    <div class="timer-step-label" id="timer-step-label">⏱ טיימר</div>
+    <div class="timer-progress"><div class="timer-progress-fill" id="timer-progress-fill" style="width:100%"></div></div>
+    <div class="timer-display" id="timer-display">00:00</div>
+    <div class="timer-btns">
+      <button class="timer-action-btn secondary" onclick="closeTimer()">✕ סגור</button>
+      <button class="timer-action-btn primary" id="timer-toggle-btn" onclick="toggleTimer()">▶ התחל</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════════ DELETE MODAL ══════════ -->
 <div class="modal-overlay" id="del-modal" onclick="closeDelModal()">
   <div class="modal-box" onclick="event.stopPropagation()">
@@ -495,12 +578,13 @@ const state = {
   cats: initialState.cats,
   activeCat: 'הכל',
   favOnly: false,
-  currentPage: 'home',  // home | detail | form
+  currentPage: 'home',
   detailId: null,
+  detailServings: null,
   editMode: false,
   delTargetId: null,
   formStep: 1,
-  fd: null,              // form data
+  fd: null,
   editCatIdx: null,
 };
 
@@ -607,10 +691,18 @@ function toggleFav(id) {
 // ══════════════════════════════════════════════════════
 function openDetail(id) {
   state.detailId = id;
+  state.detailServings = null; // reset scaler
+  renderDetail();
+  showPage('detail');
+}
+
+function renderDetail() {
+  const id = state.detailId;
   const r = state.recipes.find(x => x.id === id);
   if (!r) return;
 
-  const catColor = CAT_COLORS[r.category] || '#8B6914';
+  const scaledServings = state.detailServings || r.servings;
+  const ratio = scaledServings / (r.servings || 1);
 
   // Hero
   document.getElementById('detail-hero').innerHTML = `
@@ -619,7 +711,6 @@ function openDetail(id) {
     <div class="detail-title">${esc(r.title)}</div>
     <div class="detail-badges">
       <span class="badge">⏱ ${esc(r.time)}</span>
-      <span class="badge">👥 ${r.servings} מנות</span>
       <span class="badge">📊 ${esc(r.difficulty)}</span>
     </div>
     <div class="detail-actions">
@@ -629,22 +720,73 @@ function openDetail(id) {
     </div>
   `;
 
-  // Body
+  // Parse ingredient amounts for scaling
+  function scaleIngredient(ing) {
+    // Match number (including fractions like 1/2) at start or after common prefixes
+    return ing.replace(/(\d+(?:[.,]\d+)?(?:\/\d+)?)/g, (match) => {
+      const parts = match.split('/');
+      let num = parts.length === 2 ? parseInt(parts[0]) / parseInt(parts[1]) : parseFloat(match.replace(',','.'));
+      if (isNaN(num)) return match;
+      const scaled = num * ratio;
+      // Format nicely
+      let display;
+      if (Math.abs(scaled - Math.round(scaled)) < 0.05) display = Math.round(scaled).toString();
+      else if (Math.abs(scaled - 0.25) < 0.05) display = '¼';
+      else if (Math.abs(scaled - 0.5) < 0.05) display = '½';
+      else if (Math.abs(scaled - 0.75) < 0.05) display = '¾';
+      else if (Math.abs(scaled - 1.5) < 0.05) display = '1½';
+      else if (Math.abs(scaled - 2.5) < 0.05) display = '2½';
+      else display = (Math.round(scaled * 4) / 4).toString();
+      return `<span class="ing-amount">${display}</span>`;
+    });
+  }
+
+  // Extract timer hint from step text (looks for numbers followed by דקות/שעה/שעות/שניות)
+  function extractTimer(step) {
+    const m = step.match(/(\d+)\s*(דקות?|שעות?|שניות?)/);
+    if (!m) return null;
+    const n = parseInt(m[1]);
+    const unit = m[2];
+    if (unit.startsWith('שעה') || unit.startsWith('שעות')) return n * 3600;
+    if (unit.startsWith('שניות') || unit.startsWith('שנייה')) return n;
+    return n * 60; // דקות
+  }
+
   const tags = r.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('');
-  const ings = r.ingredients.map(i => `<div class="ing-item"><span class="ing-dot">✦</span>${esc(i)}</div>`).join('');
-  const steps = r.steps.map((s,i) => `<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${esc(s)}</div></div>`).join('');
+  const ings = r.ingredients.map(i => `<div class="ing-item"><span class="ing-dot">✦</span><span>${ratio === 1 ? esc(i) : scaleIngredient(esc(i))}</span></div>`).join('');
+  const steps = r.steps.map((s, i) => {
+    const secs = extractTimer(s);
+    const timerBtn = secs ? `<br><button class="step-timer-btn" onclick="openTimer(${secs}, ${i+1})">⏱ הפעל טיימר · ${formatTime(secs)}</button>` : '';
+    return `<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${esc(s)}${timerBtn}</div></div>`;
+  }).join('');
 
   document.getElementById('detail-body').innerHTML = `
     <p class="detail-quote">${esc(r.description)}</p>
     ${tags ? `<div class="tags-row">${tags}</div>` : ''}
+
     <div class="section-title"><span>🌿</span> מצרכים</div>
+    <div class="servings-bar">
+      <span class="servings-label">👥 כמות מנות</span>
+      <button class="srv-btn" onclick="changeServings(-1)" ${scaledServings <= 1 ? 'disabled' : ''}>−</button>
+      <span class="servings-count">${scaledServings}</span>
+      <button class="srv-btn" onclick="changeServings(1)">+</button>
+    </div>
     <div style="margin-bottom:22px">${ings}</div>
+
     <div class="section-title"><span>📋</span> אופן הכנה</div>
     ${steps}
     <div class="detail-footer">✦ ✦ ✦</div>
   `;
+}
 
-  showPage('detail');
+function changeServings(delta) {
+  const r = state.recipes.find(x => x.id === state.detailId);
+  if (!r) return;
+  const current = state.detailServings || r.servings;
+  const next = Math.max(1, current + delta);
+  state.detailServings = next;
+  renderDetail();
+  // Keep scroll position
 }
 
 function toggleFavDetail(id) {
@@ -921,6 +1063,100 @@ function handleImgUpload(e) {
   reader.onload = ev => { state.fd.image = ev.target.result; renderForm(); };
   reader.readAsDataURL(file);
   e.target.value = '';
+}
+
+// ══════════════════════════════════════════════════════
+//  TIMER
+// ══════════════════════════════════════════════════════
+const timerState = { total: 0, remaining: 0, running: false, interval: null, stepNum: 0 };
+
+function formatTime(secs) {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function openTimer(seconds, stepNum) {
+  stopTimer();
+  timerState.total = seconds;
+  timerState.remaining = seconds;
+  timerState.running = false;
+  timerState.stepNum = stepNum;
+  updateTimerUI();
+  document.getElementById('timer-overlay').classList.add('show');
+}
+
+function closeTimer() {
+  stopTimer();
+  document.getElementById('timer-overlay').classList.remove('show');
+}
+
+function toggleTimer() {
+  if (timerState.running) {
+    stopTimer();
+  } else {
+    startTimer();
+  }
+}
+
+function startTimer() {
+  if (timerState.remaining <= 0) {
+    timerState.remaining = timerState.total; // restart
+  }
+  timerState.running = true;
+  document.getElementById('timer-toggle-btn').textContent = '⏸ עצור';
+  timerState.interval = setInterval(() => {
+    timerState.remaining--;
+    updateTimerUI();
+    if (timerState.remaining <= 0) {
+      stopTimer();
+      timerDone();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  timerState.running = false;
+  clearInterval(timerState.interval);
+  const btn = document.getElementById('timer-toggle-btn');
+  if (btn) btn.textContent = timerState.remaining <= 0 ? '🔄 התחל מחדש' : '▶ המשך';
+}
+
+function timerDone() {
+  const disp = document.getElementById('timer-display');
+  if (disp) { disp.textContent = '✓ סיום!'; disp.classList.add('urgent'); }
+  const btn = document.getElementById('timer-toggle-btn');
+  if (btn) btn.textContent = '🔄 שוב';
+  // Vibrate if supported
+  if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]);
+  // Audio beep
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.3, 0.6].forEach(t => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.4, ctx.currentTime + t);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + 0.25);
+      osc.start(ctx.currentTime + t); osc.stop(ctx.currentTime + t + 0.3);
+    });
+  } catch(e) {}
+}
+
+function updateTimerUI() {
+  const disp = document.getElementById('timer-display');
+  const fill = document.getElementById('timer-progress-fill');
+  const lbl  = document.getElementById('timer-step-label');
+  const btn  = document.getElementById('timer-toggle-btn');
+  if (!disp) return;
+  disp.textContent = formatTime(timerState.remaining);
+  disp.classList.toggle('urgent', timerState.remaining <= 10 && timerState.running);
+  if (fill) fill.style.width = (timerState.remaining / timerState.total * 100) + '%';
+  if (lbl) lbl.textContent = `⏱ שלב ${timerState.stepNum}`;
+  if (btn && timerState.remaining > 0) btn.textContent = timerState.running ? '⏸ עצור' : (timerState.remaining < timerState.total ? '▶ המשך' : '▶ התחל');
 }
 
 // ══════════════════════════════════════════════════════
