@@ -11,134 +11,183 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#F7EDD8;--cream:#FFF9EE;--border:#C8A87A;--brown:#5C3D1E;--dark:#3A2210;--gold:#8B6914;--text:#2C1A0E;--muted:#7A5C3A;--light:#E8D5B0;--red:#8B3A3A;--ff:'Playfair Display',Georgia,serif;--fb:'Lora',Georgia,serif;}
+:root{
+  --bg:#F4E8CC;--cream:#FFFAF0;--border:#C8A87A;
+  --brown:#5C3D1E;--dark:#3A2210;--gold:#8B6914;
+  --text:#2C1A0E;--muted:#7A5C3A;--light:#E8D5B0;
+  --red:#8B3A3A;--green:#3D6B45;
+  --ff:'Playfair Display',Georgia,serif;
+  --fb:'Lora',Georgia,serif;
+  --shadow:0 4px 20px rgba(0,0,0,.12);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.2);
+}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--dark);overflow:hidden;}
 body{font-family:var(--fb);}
-#app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;}
+#app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
 .page{display:none;flex-direction:column;height:100%;overflow:hidden;}
 .page.active{display:flex;}
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .scroll-area::-webkit-scrollbar{width:3px;}
 .scroll-area::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
 
+/* ── LOGIN PAGE ── */
+#page-login{background:linear-gradient(160deg,var(--dark) 0%,#4A2A12 50%,#5C3D1E 100%);justify-content:center;align-items:center;padding:30px 24px;}
+.login-ornament{color:var(--gold);font-size:9px;letter-spacing:14px;opacity:.7;margin-bottom:16px;text-align:center;}
+.login-title{font-family:var(--ff);font-size:28px;font-weight:900;color:#FFF9EE;text-align:center;letter-spacing:2px;text-shadow:2px 3px 10px rgba(0,0,0,.5);margin-bottom:6px;}
+.login-sub{font-size:10px;color:#C4A882;letter-spacing:5px;text-align:center;font-style:italic;opacity:.85;margin-bottom:32px;}
+.login-box{background:rgba(255,249,238,.07);border:1.5px solid rgba(200,168,122,.3);border-radius:16px;padding:24px 20px;width:100%;backdrop-filter:blur(8px);}
+.login-tabs{display:flex;gap:0;margin-bottom:22px;border:1.5px solid rgba(200,168,122,.3);border-radius:8px;overflow:hidden;}
+.login-tab{flex:1;padding:9px;background:transparent;border:none;color:#C4A882;font-family:var(--fb);font-size:13px;cursor:pointer;transition:all .2s;}
+.login-tab.active{background:var(--gold);color:#FFF9EE;}
+.login-field{margin-bottom:14px;}
+.login-field label{display:block;font-size:11px;color:#C4A882;margin-bottom:5px;letter-spacing:.5px;font-family:var(--ff);}
+.login-field input{width:100%;padding:10px 13px;background:rgba(255,249,238,.1);border:1.5px solid rgba(200,168,122,.35);border-radius:7px;font-family:var(--fb);font-size:14px;color:#FFF9EE;direction:rtl;}
+.login-field input::placeholder{color:rgba(196,168,130,.5);}
+.login-field input:focus{outline:none;border-color:var(--gold);background:rgba(255,249,238,.15);}
+.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),#A07820);border:none;border-radius:8px;color:#FFF9EE;font-family:var(--ff);font-size:15px;letter-spacing:1px;cursor:pointer;margin-top:5px;box-shadow:0 4px 15px rgba(139,105,20,.4);}
+.login-btn:active{filter:brightness(.88);}
+.login-err{color:#E87A7A;font-size:12px;text-align:center;margin-top:9px;min-height:18px;font-style:italic;}
+.login-users-hint{color:#C4A882;font-size:11px;text-align:center;margin-top:14px;opacity:.7;}
+
 /* ── HEADER ── */
-.hdr{background:linear-gradient(168deg,var(--dark) 0%,var(--brown) 65%,#7A4A2A 100%);padding:16px 18px 13px;text-align:center;border-bottom:3px solid var(--gold);box-shadow:0 6px 28px rgba(0,0,0,.38);position:relative;overflow:hidden;flex-shrink:0;}
+.hdr{background:linear-gradient(168deg,var(--dark) 0%,var(--brown) 65%,#7A4A2A 100%);padding:14px 16px 11px;text-align:center;border-bottom:3px solid var(--gold);box-shadow:0 6px 28px rgba(0,0,0,.38);position:relative;overflow:hidden;flex-shrink:0;}
 .hdr::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 25% 15%,rgba(139,105,20,.22) 0%,transparent 55%);pointer-events:none;}
-.hdr-orn{color:var(--gold);font-size:10px;letter-spacing:12px;opacity:.75;margin-bottom:4px;}
-.hdr-title{font-family:var(--ff);font-size:24px;font-weight:900;color:#FFF9EE;letter-spacing:2px;text-shadow:2px 3px 8px rgba(0,0,0,.5);line-height:1.1;}
-.hdr-sub{font-size:9px;color:#C4A882;letter-spacing:5px;margin-top:3px;font-style:italic;opacity:.9;}
-.hdr-count{font-size:11px;color:var(--gold);margin-top:5px;opacity:.85;}
-.hdr-sm{padding:11px 18px 9px;}
-.hdr-sm .hdr-title{font-size:19px;}
+.hdr-orn{color:var(--gold);font-size:9px;letter-spacing:12px;opacity:.75;margin-bottom:3px;}
+.hdr-title{font-family:var(--ff);font-size:22px;font-weight:900;color:#FFF9EE;letter-spacing:2px;text-shadow:2px 3px 8px rgba(0,0,0,.5);line-height:1.1;}
+.hdr-sub{font-size:9px;color:#C4A882;letter-spacing:4px;margin-top:2px;font-style:italic;opacity:.9;}
+.hdr-count{font-size:11px;color:var(--gold);margin-top:4px;opacity:.85;}
+.hdr-user-row{position:absolute;top:10px;left:12px;display:flex;align-items:center;gap:6px;z-index:2;}
+.hdr-username{font-size:10px;color:#C4A882;font-style:italic;}
+.hdr-logout{background:rgba(255,249,238,.12);border:1px solid rgba(200,168,122,.3);color:#C4A882;padding:3px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-family:var(--fb);}
+.hdr-logout:active{background:rgba(255,249,238,.22);}
+.hdr-sm{padding:9px 16px 7px;}
+.hdr-sm .hdr-title{font-size:18px;}
 
 /* ── NAV ── */
 .nav{display:flex;background:var(--dark);border-bottom:2px solid var(--gold);flex-shrink:0;}
-.nav-btn{flex:1;padding:11px 2px;background:transparent;border:none;color:#C4A882;font-size:11px;font-family:var(--fb);cursor:pointer;letter-spacing:.3px;transition:background .2s,color .2s;}
+.nav-btn{flex:1;padding:10px 2px;background:transparent;border:none;color:#C4A882;font-size:11px;font-family:var(--fb);cursor:pointer;letter-spacing:.3px;transition:all .2s;}
 .nav-btn.active{background:var(--gold);color:#FFF9EE;}
 .nav-btn:active{filter:brightness(.88);}
 
 /* ── SEARCH ── */
-.search-bar{padding:10px 12px;background:linear-gradient(to bottom,#EDE0C4,#F2E4C4);border-bottom:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;}
-.search-input{flex:1;padding:9px 12px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-family:var(--fb);font-size:14px;color:var(--text);direction:rtl;}
+.search-bar{padding:9px 12px;background:linear-gradient(to bottom,#EDE0C4,#F0E2C0);border-bottom:1px solid var(--border);display:flex;gap:7px;flex-shrink:0;}
+.search-input{flex:1;padding:8px 12px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-family:var(--fb);font-size:14px;color:var(--text);direction:rtl;}
 .search-input:focus{outline:none;border-color:var(--gold);}
-.fav-toggle{padding:9px 13px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-size:18px;cursor:pointer;color:var(--muted);transition:all .2s;flex-shrink:0;}
+.fav-toggle{padding:8px 12px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-size:18px;cursor:pointer;color:var(--muted);transition:all .2s;flex-shrink:0;}
 .fav-toggle.on{background:#7C3A1E;color:#FFD700;}
 
 /* ── CAT BAR ── */
-.cat-bar{display:flex;gap:7px;padding:9px 12px;overflow-x:auto;background:#EDE0C4;border-bottom:1px solid var(--border);flex-shrink:0;scrollbar-width:none;}
+.cat-bar{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;background:#EDE0C4;border-bottom:1px solid var(--border);flex-shrink:0;scrollbar-width:none;}
 .cat-bar::-webkit-scrollbar{display:none;}
-.cat-pill{flex-shrink:0;padding:5px 13px;background:var(--cream);border:1.5px solid var(--border);border-radius:20px;font-size:12px;color:var(--brown);cursor:pointer;font-family:var(--fb);white-space:nowrap;transition:all .2s;}
+.cat-pill{flex-shrink:0;padding:4px 12px;background:var(--cream);border:1.5px solid var(--border);border-radius:20px;font-size:12px;color:var(--brown);cursor:pointer;font-family:var(--fb);white-space:nowrap;transition:all .2s;}
 .cat-pill.active{color:#FFF9EE;font-weight:600;}
 .cat-pill:active{filter:brightness(.9);}
-.cat-manage-pill{flex-shrink:0;padding:5px 11px;background:transparent;border:1.5px dashed var(--border);border-radius:20px;font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--fb);white-space:nowrap;}
+.cat-manage-pill{flex-shrink:0;padding:4px 10px;background:transparent;border:1.5px dashed var(--border);border-radius:20px;font-size:11px;color:var(--muted);cursor:pointer;font-family:var(--fb);white-space:nowrap;}
 .cat-manage-pill:active{border-color:var(--gold);}
 
 /* ── CARDS ── */
-.cards-list{padding:11px 12px;display:flex;flex-direction:column;gap:12px;}
-.card{background:var(--cream);border:1.5px solid var(--border);border-radius:11px;cursor:pointer;box-shadow:2px 4px 14px rgba(0,0,0,.1);overflow:hidden;position:relative;animation:fadeSlide .3s ease both;transition:box-shadow .2s;}
-.card:active{box-shadow:1px 2px 5px rgba(0,0,0,.1);}
-.card-accent{position:absolute;top:0;right:0;width:5px;height:100%;border-radius:0 11px 11px 0;}
-.card-img{width:100%;height:158px;object-fit:cover;display:block;}
-.card-body{padding:12px 13px 11px 11px;}
-.card-top{display:flex;align-items:flex-start;gap:9px;margin-bottom:7px;}
-.card-emoji{font-size:28px;line-height:1;flex-shrink:0;}
+.cards-list{padding:11px 12px;display:flex;flex-direction:column;gap:11px;}
+.card{background:var(--cream);border:1.5px solid var(--border);border-radius:13px;cursor:pointer;box-shadow:var(--shadow);overflow:hidden;position:relative;animation:fadeSlide .32s ease both;transition:box-shadow .2s,transform .15s;}
+.card:active{box-shadow:1px 2px 5px rgba(0,0,0,.08);transform:scale(.99);}
+.card-accent{position:absolute;top:0;right:0;width:5px;height:100%;border-radius:0 13px 13px 0;}
+.card-img{width:100%;height:155px;object-fit:cover;display:block;}
+.card-body{padding:11px 13px 10px 44px;}
+.card-drag-handle{position:absolute;left:0;top:0;bottom:0;width:36px;display:flex;align-items:center;justify-content:center;color:var(--light);font-size:16px;cursor:grab;touch-action:none;}
+.card-drag-handle:active{cursor:grabbing;color:var(--gold);}
+.card-top{display:flex;align-items:flex-start;gap:9px;margin-bottom:6px;}
+.card-emoji{font-size:27px;line-height:1;flex-shrink:0;}
 .card-info{flex:1;min-width:0;}
 .card-title{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--text);line-height:1.25;margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .card-cat-badge{display:inline-block;font-size:10px;font-weight:600;color:#FFF9EE;padding:1px 8px;border-radius:9px;}
-.card-desc{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:9px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
-.card-meta{display:flex;gap:12px;font-size:11px;color:var(--gold);border-top:1px dashed var(--light);padding-top:7px;}
-.fav-star{background:none;border:none;font-size:20px;cursor:pointer;color:var(--light);padding:2px;flex-shrink:0;transition:transform .15s;}
+.card-desc{font-size:12px;color:var(--muted);font-style:italic;line-height:1.5;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.card-meta{display:flex;gap:11px;font-size:11px;color:var(--gold);border-top:1px dashed var(--light);padding-top:6px;}
+.fav-star{background:none;border:none;font-size:19px;cursor:pointer;color:var(--light);padding:2px;flex-shrink:0;transition:transform .15s;}
 .fav-star.on{color:var(--gold);}
 .fav-star:active{transform:scale(1.3);}
+.card.drag-over{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold);}
+.card.dragging{opacity:.45;transform:scale(.97);}
 .empty-state{text-align:center;padding:50px 20px;color:var(--muted);}
 .empty-icon{font-size:46px;margin-bottom:11px;}
 .empty-hint{font-size:13px;margin-top:10px;opacity:.7;}
-.filter-count{padding:7px 12px 0;font-size:11px;color:var(--muted);font-style:italic;flex-shrink:0;}
+.filter-count{padding:6px 12px 0;font-size:11px;color:var(--muted);font-style:italic;flex-shrink:0;}
 
 /* ── DETAIL ── */
-.detail-hero{background:linear-gradient(168deg,var(--dark),var(--brown));padding:14px 16px 18px;position:relative;flex-shrink:0;}
+.detail-hero{background:linear-gradient(168deg,var(--dark),var(--brown));padding:13px 16px 16px;position:relative;flex-shrink:0;}
 .detail-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(139,105,20,.18) 0%,transparent 60%);pointer-events:none;}
-.back-btn{background:rgba(255,249,238,.13);border:1px solid rgba(255,249,238,.27);color:#FFF9EE;padding:7px 13px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:12px;margin-bottom:12px;display:inline-block;position:relative;z-index:1;}
+.back-btn{background:rgba(255,249,238,.13);border:1px solid rgba(255,249,238,.27);color:#FFF9EE;padding:6px 12px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:12px;margin-bottom:11px;display:inline-block;position:relative;z-index:1;}
 .back-btn:active{background:rgba(255,249,238,.22);}
-.detail-img-hero{width:100%;height:195px;object-fit:cover;border-radius:10px;border:2px solid rgba(255,249,238,.22);margin-bottom:12px;display:block;position:relative;z-index:1;}
-.detail-emoji{text-align:center;font-size:50px;margin-bottom:6px;position:relative;z-index:1;}
+.detail-img-hero{width:100%;height:190px;object-fit:cover;border-radius:10px;border:2px solid rgba(255,249,238,.2);margin-bottom:11px;display:block;position:relative;z-index:1;}
+.detail-emoji{text-align:center;font-size:50px;margin-bottom:5px;position:relative;z-index:1;}
 .detail-title{font-family:var(--ff);font-size:21px;font-weight:900;color:#FFF9EE;text-align:center;text-shadow:1px 2px 7px rgba(0,0,0,.45);line-height:1.2;position:relative;z-index:1;}
-.detail-badges{display:flex;justify-content:center;gap:7px;margin-top:10px;flex-wrap:wrap;position:relative;z-index:1;}
-.badge{background:rgba(255,249,238,.14);border:1px solid rgba(255,249,238,.28);color:#FFF9EE;padding:3px 10px;border-radius:12px;font-size:12px;}
-.detail-actions{display:flex;gap:7px;margin-top:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
-.act-btn{border:none;padding:7px 15px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:12px;font-weight:600;}
+.detail-badges{display:flex;justify-content:center;gap:6px;margin-top:9px;flex-wrap:wrap;position:relative;z-index:1;}
+.badge{background:rgba(255,249,238,.14);border:1px solid rgba(255,249,238,.28);color:#FFF9EE;padding:3px 9px;border-radius:12px;font-size:12px;}
+.detail-actions{display:flex;gap:6px;margin-top:11px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
+.act-btn{border:none;padding:7px 13px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:12px;font-weight:600;transition:filter .15s;}
 .act-btn:active{filter:brightness(.85);}
 .act-gold{background:var(--gold);color:#FFF9EE;}
 .act-red{background:var(--red);color:#FFF9EE;}
+.act-green{background:var(--green);color:#FFF9EE;}
 .act-fav{background:rgba(255,249,238,.14);border:1px solid rgba(255,249,238,.28)!important;color:#FFF9EE;font-size:13px;}
 .act-fav.on{color:#FFD700;}
-.detail-body-inner{padding:18px 16px 36px;}
-.detail-quote{font-style:italic;color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:17px;background:rgba(200,168,122,.08);border-right:4px solid var(--light);padding:10px 12px;border-radius:0 6px 6px 0;}
-.tags-row{margin-bottom:17px;}
+.detail-body-inner{padding:16px 16px 36px;}
+.detail-quote{font-style:italic;color:var(--muted);font-size:14px;line-height:1.75;margin-bottom:16px;background:rgba(200,168,122,.08);border-right:4px solid var(--light);padding:10px 12px;border-radius:0 6px 6px 0;}
+.tags-row{margin-bottom:16px;}
 .tag{display:inline-block;background:var(--light);border:1px solid var(--border);color:var(--brown);padding:2px 9px;border-radius:12px;font-size:11px;margin-left:5px;margin-bottom:4px;}
-.section-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--brown);border-bottom:2px solid var(--light);padding-bottom:6px;margin-bottom:11px;letter-spacing:.6px;display:flex;align-items:center;gap:6px;}
-.ing-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px dashed var(--light);font-size:14px;color:var(--text);}
-.ing-dot{color:var(--gold);font-size:11px;flex-shrink:0;}
+.section-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--brown);border-bottom:2px solid var(--light);padding-bottom:5px;margin-bottom:10px;letter-spacing:.6px;display:flex;align-items:center;gap:6px;}
+.ing-group-title{font-family:var(--ff);font-size:12px;font-weight:700;color:var(--gold);background:var(--light);padding:4px 10px;border-radius:5px;margin:12px 0 6px;display:inline-block;letter-spacing:.4px;}
+.ing-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed var(--light);font-size:14px;color:var(--text);}
+.ing-dot{color:var(--gold);font-size:10px;flex-shrink:0;}
 .ing-amount{color:var(--gold);font-weight:700;}
-.step-item{display:flex;gap:11px;margin-bottom:12px;align-items:flex-start;}
-.step-num{background:var(--brown);color:#FFF9EE;width:27px;height:27px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:700;font-family:var(--ff);}
-.step-text{font-size:14px;color:var(--text);line-height:1.7;flex:1;padding-top:3px;}
-.detail-footer{text-align:center;color:var(--light);font-size:17px;margin-top:30px;letter-spacing:9px;}
+.step-item{display:flex;gap:11px;margin-bottom:11px;align-items:flex-start;}
+.step-num{background:var(--brown);color:#FFF9EE;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;font-weight:700;font-family:var(--ff);}
+.step-text{font-size:14px;color:var(--text);line-height:1.7;flex:1;padding-top:2px;}
+.detail-footer{text-align:center;color:var(--light);font-size:17px;margin-top:28px;letter-spacing:9px;}
 
 /* ── SERVINGS ── */
-.servings-bar{display:flex;align-items:center;gap:11px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:9px 13px;margin-bottom:18px;}
+.servings-bar{display:flex;align-items:center;gap:10px;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;padding:8px 13px;margin-bottom:16px;}
 .servings-label{font-family:var(--ff);font-size:13px;color:var(--brown);font-weight:700;flex:1;}
-.servings-count{font-family:var(--ff);font-size:20px;font-weight:900;color:var(--brown);min-width:30px;text-align:center;}
-.srv-btn{width:33px;height:33px;border-radius:50%;background:var(--brown);color:#FFF9EE;border:none;font-size:19px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;line-height:1;}
+.servings-count{font-family:var(--ff);font-size:19px;font-weight:900;color:var(--brown);min-width:28px;text-align:center;}
+.srv-btn{width:31px;height:31px;border-radius:50%;background:var(--brown);color:#FFF9EE;border:none;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;transition:filter .15s;}
 .srv-btn:active{filter:brightness(.8);}
 .srv-btn:disabled{background:var(--light);color:var(--border);cursor:default;}
 
-/* ── TIMER BTN ── */
-.timer-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(139,105,20,.1);border:1.5px solid var(--gold);color:var(--gold);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:var(--fb);margin-top:6px;}
-.timer-btn:active{background:rgba(139,105,20,.22);}
+/* ── SHARE SHEET ── */
+.share-sheet{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.6);display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);}
+.share-sheet.show{display:flex;}
+.share-box{background:var(--cream);border-radius:20px 20px 0 0;padding:20px 20px 36px;width:100%;max-width:480px;animation:slideUp .25s ease;border-top:3px solid var(--gold);}
+.share-title{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--brown);text-align:center;margin-bottom:18px;}
+.share-options{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;}
+.share-opt{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 8px;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;}
+.share-opt:active{background:var(--light);border-color:var(--gold);}
+.share-opt-icon{font-size:26px;}
+.share-opt-label{font-size:11px;color:var(--brown);font-family:var(--fb);font-weight:600;}
+.share-cancel{width:100%;margin-top:13px;padding:12px;background:var(--light);border:1.5px solid var(--border);border-radius:9px;cursor:pointer;font-family:var(--ff);font-size:14px;color:var(--brown);}
+.share-cancel:active{filter:brightness(.9);}
 
-/* ── TIMER OVERLAY ── */
+/* ── TIMER ── */
+.timer-btn{display:inline-flex;align-items:center;gap:5px;background:rgba(139,105,20,.1);border:1.5px solid var(--gold);color:var(--gold);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;font-family:var(--fb);margin-top:5px;}
+.timer-btn:active{background:rgba(139,105,20,.22);}
 .timer-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.83);display:none;flex-direction:column;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
 .timer-overlay.show{display:flex;}
-.timer-box{background:linear-gradient(160deg,var(--dark),var(--brown));border:3px solid var(--gold);border-radius:22px;padding:32px 36px;text-align:center;width:86%;max-width:310px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:modalIn .22s ease;}
-.timer-step-lbl{font-size:11px;color:#C4A882;letter-spacing:2px;margin-bottom:9px;font-style:italic;}
-.timer-progress{width:100%;height:5px;background:rgba(255,249,238,.15);border-radius:3px;margin-bottom:20px;overflow:hidden;}
+.timer-box{background:linear-gradient(160deg,var(--dark),var(--brown));border:3px solid var(--gold);border-radius:22px;padding:30px 36px;text-align:center;width:86%;max-width:310px;box-shadow:0 30px 80px rgba(0,0,0,.6);animation:modalIn .22s ease;}
+.timer-step-lbl{font-size:11px;color:#C4A882;letter-spacing:2px;margin-bottom:8px;font-style:italic;}
+.timer-progress{width:100%;height:5px;background:rgba(255,249,238,.15);border-radius:3px;margin-bottom:18px;overflow:hidden;}
 .timer-progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .8s linear;}
-.timer-display{font-family:var(--ff);font-size:68px;font-weight:900;color:#FFF9EE;letter-spacing:3px;line-height:1;text-shadow:0 0 30px rgba(139,105,20,.6);margin-bottom:22px;}
+.timer-display{font-family:var(--ff);font-size:66px;font-weight:900;color:#FFF9EE;letter-spacing:3px;line-height:1;text-shadow:0 0 30px rgba(139,105,20,.6);margin-bottom:20px;}
 .timer-display.urgent{color:#E8774A;animation:timerPulse .6s ease infinite;}
-.timer-btns{display:flex;gap:11px;justify-content:center;}
-.timer-act{padding:11px 20px;border-radius:9px;border:none;font-family:var(--ff);font-size:14px;cursor:pointer;font-weight:700;letter-spacing:.3px;}
+.timer-btns{display:flex;gap:10px;justify-content:center;}
+.timer-act{padding:10px 18px;border-radius:9px;border:none;font-family:var(--ff);font-size:14px;cursor:pointer;font-weight:700;}
 .timer-act:active{filter:brightness(.85);}
 .timer-primary{background:var(--gold);color:#FFF9EE;}
 .timer-secondary{background:rgba(255,249,238,.12);color:#FFF9EE;border:1px solid rgba(255,249,238,.3)!important;}
 
 /* ── FORM ── */
 .form-subhdr{display:flex;align-items:center;background:var(--dark);border-bottom:2px solid var(--gold);padding:0 12px;flex-shrink:0;}
-.form-back{background:transparent;border:none;color:#C4A882;padding:11px 7px;cursor:pointer;font-family:var(--fb);font-size:12px;}
+.form-back{background:transparent;border:none;color:#C4A882;padding:10px 7px;cursor:pointer;font-family:var(--fb);font-size:12px;}
 .form-back:active{color:#FFF9EE;}
 .form-title-mid{flex:1;text-align:center;color:var(--gold);font-family:var(--ff);font-size:13px;}
-.progress-wrap{background:var(--dark);padding:9px 13px 11px;flex-shrink:0;}
+.progress-wrap{background:var(--dark);padding:8px 13px 10px;flex-shrink:0;}
 .progress-bars{display:flex;gap:4px;}
 .progress-bar{flex:1;height:4px;border-radius:2px;background:rgba(122,92,58,.35);transition:background .35s;}
 .progress-bar.done{background:var(--gold);}
@@ -146,35 +195,37 @@ body{font-family:var(--fb);}
 .progress-lbl{font-size:10px;color:var(--muted);font-style:italic;transition:color .3s;}
 .progress-lbl.active{color:var(--gold);}
 .form-body{padding:16px 16px 48px;}
-.field{margin-bottom:14px;}
+.field{margin-bottom:13px;}
 .field label{display:block;font-size:12px;color:var(--brown);margin-bottom:4px;font-weight:700;letter-spacing:.4px;font-family:var(--ff);}
 .field input,.field select,.field textarea{width:100%;padding:9px 11px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-family:var(--fb);font-size:14px;color:var(--text);direction:rtl;-webkit-appearance:none;}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--gold);}
 .field textarea{min-height:66px;resize:vertical;}
 .row2{display:flex;gap:9px;}
 .row2 .field{flex:1;}
-.emoji-grid{display:flex;flex-wrap:wrap;gap:7px;}
-.emoji-btn{font-size:22px;background:transparent;border:2px solid transparent;border-radius:6px;padding:4px;cursor:pointer;}
-.emoji-btn.sel{background:var(--light);border-color:var(--gold);}
-.emoji-btn:active{transform:scale(.88);}
+
+/* Emoji picker */
+.emoji-picker-row{display:flex;gap:9px;align-items:center;margin-bottom:6px;}
+.emoji-current{font-size:38px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--cream);border:2px solid var(--border);border-radius:10px;flex-shrink:0;}
+.emoji-keyboard-btn{flex:1;padding:10px;background:var(--cream);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-family:var(--fb);font-size:13px;color:var(--brown);display:flex;align-items:center;justify-content:center;gap:6px;}
+.emoji-keyboard-btn:active{border-color:var(--gold);background:var(--light);}
+.emoji-keyboard-input{position:absolute;opacity:0;pointer-events:none;width:0;height:0;}
 
 /* Photo picker */
 .photo-options{display:flex;gap:9px;margin-top:7px;}
-.photo-opt-btn{flex:1;padding:11px 8px;background:var(--cream);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-family:var(--fb);font-size:13px;color:var(--brown);text-align:center;transition:all .2s;}
+.photo-opt-btn{flex:1;padding:10px 8px;background:var(--cream);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-family:var(--fb);font-size:13px;color:var(--brown);text-align:center;transition:all .2s;}
 .photo-opt-btn:active{border-color:var(--gold);background:var(--light);}
-.upload-zone{border:2px dashed var(--border);border-radius:9px;padding:18px;text-align:center;cursor:pointer;background:rgba(139,105,20,.03);margin-top:5px;}
+.upload-zone{border:2px dashed var(--border);border-radius:9px;padding:16px;text-align:center;cursor:pointer;background:rgba(139,105,20,.03);margin-top:5px;}
 .upload-zone.has-img{padding:5px;border-style:solid;border-color:var(--gold);}
-.upload-zone:active{border-color:var(--gold);}
-.upload-preview{width:100%;height:145px;object-fit:cover;border-radius:7px;display:block;}
-.upload-icon{font-size:28px;margin-bottom:5px;}
+.upload-preview{width:100%;height:140px;object-fit:cover;border-radius:7px;display:block;}
+.upload-icon{font-size:27px;margin-bottom:5px;}
 .upload-text{font-size:13px;color:var(--muted);}
 .upload-sub{font-size:11px;color:var(--light);margin-top:2px;}
 .remove-img-btn{background:transparent;border:1.5px solid var(--red);color:var(--red);border-radius:5px;padding:6px;cursor:pointer;font-family:var(--fb);font-size:12px;width:100%;margin-top:5px;}
 .remove-img-btn:active{background:rgba(139,58,58,.08);}
 
-/* Ingredient / step rows */
+/* Dynamic rows */
 .dyn-row{display:flex;gap:7px;margin-bottom:7px;}
-.ing-field-wrap{flex:1;position:relative;}/* for autocomplete */
+.ing-field-wrap{flex:1;position:relative;}
 .dyn-input{width:100%;padding:9px 11px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-family:var(--fb);font-size:14px;color:var(--text);direction:rtl;}
 .dyn-input:focus{outline:none;border-color:var(--gold);}
 .dyn-textarea{flex:1;padding:9px 11px;background:var(--cream);border:1.5px solid var(--border);border-radius:6px;font-family:var(--fb);font-size:14px;color:var(--text);direction:rtl;min-height:52px;resize:vertical;}
@@ -185,7 +236,17 @@ body{font-family:var(--fb);}
 .add-more-btn:active{border-color:var(--gold);color:var(--brown);}
 .step-label{font-size:11px;color:var(--gold);margin-bottom:4px;font-family:var(--ff);}
 
-/* Autocomplete dropdown */
+/* Ingredient group section */
+.ing-section{background:rgba(200,168,122,.08);border:1.5px solid var(--light);border-radius:9px;padding:11px 11px 7px;margin-bottom:11px;}
+.ing-section-header{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.ing-section-name{flex:1;padding:6px 10px;background:var(--cream);border:1.5px solid var(--gold);border-radius:6px;font-family:var(--ff);font-size:13px;color:var(--brown);direction:rtl;font-weight:700;}
+.ing-section-name:focus{outline:none;}
+.remove-section-btn{background:var(--light);color:var(--muted);border:1.5px solid var(--border);border-radius:5px;padding:5px 9px;cursor:pointer;font-size:12px;flex-shrink:0;}
+.remove-section-btn:active{background:rgba(139,58,58,.1);color:var(--red);border-color:var(--red);}
+.add-section-btn{background:transparent;border:1.5px dashed var(--gold);color:var(--gold);border-radius:5px;padding:8px;cursor:pointer;font-family:var(--fb);font-size:12px;width:100%;margin-top:5px;}
+.add-section-btn:active{background:rgba(139,105,20,.08);}
+
+/* Autocomplete */
 .ac-dropdown{position:absolute;top:100%;right:0;left:0;background:var(--cream);border:1.5px solid var(--gold);border-top:none;border-radius:0 0 8px 8px;box-shadow:0 8px 20px rgba(0,0,0,.15);z-index:200;max-height:170px;overflow-y:auto;}
 .ac-item{padding:10px 12px;font-size:14px;color:var(--text);cursor:pointer;font-family:var(--fb);direction:rtl;border-bottom:1px solid var(--light);}
 .ac-item:last-child{border-bottom:none;}
@@ -197,14 +258,14 @@ body{font-family:var(--fb);}
 .btn-gold:disabled{opacity:.45;cursor:default;}
 .btn-gray{background:var(--light);color:var(--brown);border:1.5px solid var(--border);border-radius:7px;padding:12px;cursor:pointer;font-family:var(--ff);font-size:14px;}
 .btn-gray:active{filter:brightness(.9);}
-.btn-row{display:flex;gap:9px;margin-top:14px;}
+.btn-row{display:flex;gap:9px;margin-top:13px;}
 .btn-row .btn-gray{flex:1;}
 .btn-row .btn-gold{flex:2;margin-top:0;}
 
 /* ── MODALS ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.66);z-index:300;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px);}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px);}
 .modal-overlay.show{display:flex;}
-.modal-box{background:var(--cream);border-radius:14px;padding:22px;width:100%;max-width:340px;border:2px solid var(--border);box-shadow:0 24px 60px rgba(0,0,0,.4);animation:modalIn .22s ease;max-height:82vh;overflow-y:auto;}
+.modal-box{background:var(--cream);border-radius:14px;padding:22px;width:100%;max-width:340px;border:2px solid var(--border);box-shadow:var(--shadow-lg);animation:modalIn .22s ease;max-height:82vh;overflow-y:auto;}
 .modal-title{font-family:var(--ff);font-size:17px;font-weight:700;color:var(--brown);text-align:center;margin-bottom:9px;}
 .modal-text{font-size:14px;color:var(--muted);text-align:center;margin-bottom:19px;line-height:1.6;}
 .modal-btns{display:flex;gap:9px;}
@@ -212,7 +273,7 @@ body{font-family:var(--fb);}
 .modal-confirm{flex:1;padding:11px;background:var(--red);border:none;border-radius:7px;cursor:pointer;font-family:var(--fb);font-size:14px;color:#FFF9EE;font-weight:600;}
 .modal-cancel:active,.modal-confirm:active{filter:brightness(.88);}
 .cat-row{display:flex;align-items:center;gap:7px;padding:8px 0;border-bottom:1px dashed var(--light);}
-.cat-row-icon{font-size:17px;}
+.cat-row-icon{font-size:16px;}
 .cat-row-name{flex:1;font-size:14px;color:var(--text);font-family:var(--fb);}
 .cat-edit-inp{flex:1;padding:5px 8px;background:var(--cream);border:1.5px solid var(--gold);border-radius:4px;font-family:var(--fb);font-size:13px;color:var(--text);direction:rtl;}
 .cat-edit-inp:focus{outline:none;}
@@ -228,25 +289,50 @@ body{font-family:var(--fb);}
 .new-cat-add{background:var(--gold);border:none;color:#FFF9EE;border-radius:6px;padding:0 15px;cursor:pointer;font-size:22px;flex-shrink:0;}
 .new-cat-add:active{filter:brightness(.88);}
 
-@keyframes fadeSlide{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.55}}
 </style>
 </head>
 <body>
 <div id="app">
 
-<!-- HOME -->
-<div id="page-home" class="page active">
+<!-- ══ LOGIN PAGE ══ -->
+<div id="page-login" class="page active">
+  <div class="login-ornament">✦ ✦ ✦</div>
+  <div class="login-title">ספר המתכונים שלי</div>
+  <div class="login-sub">MY RECIPE COLLECTION</div>
+  <div class="login-box">
+    <div class="login-tabs">
+      <button class="login-tab active" id="tab-login">כניסה</button>
+      <button class="login-tab" id="tab-register">הרשמה</button>
+    </div>
+    <div id="login-form-area">
+      <div class="login-field"><label>שם משתמש</label><input id="login-username" placeholder="השם שלך..." autocomplete="username"></div>
+      <div class="login-field"><label>סיסמא</label><input id="login-password" type="password" placeholder="••••••" autocomplete="current-password"></div>
+      <button class="login-btn" id="btn-do-login">כניסה לספר שלי ←</button>
+      <div class="login-err" id="login-err"></div>
+    </div>
+    <div class="login-users-hint" id="login-users-hint"></div>
+  </div>
+</div>
+
+<!-- ══ HOME PAGE ══ -->
+<div id="page-home" class="page">
   <div class="hdr">
+    <div class="hdr-user-row">
+      <span class="hdr-username" id="hdr-username"></span>
+      <button class="hdr-logout" id="btn-logout">יציאה</button>
+    </div>
     <div class="hdr-orn">✦ ✦ ✦</div>
-    <div class="hdr-title">ספר המתכונים שלי</div>
+    <div class="hdr-title">ספר המתכונים</div>
     <div class="hdr-sub">MY RECIPE COLLECTION</div>
     <div class="hdr-count" id="hdr-count"></div>
   </div>
   <div class="nav">
     <button class="nav-btn active" id="btn-nav-home">📖 מתכונים</button>
-    <button class="nav-btn" id="btn-nav-add">✏️ מתכון חדש</button>
+    <button class="nav-btn" id="btn-nav-add">✏️ חדש</button>
     <button class="nav-btn" id="btn-nav-cats">⚙️ קטגוריות</button>
   </div>
   <div class="search-bar">
@@ -261,7 +347,7 @@ body{font-family:var(--fb);}
   </div>
 </div>
 
-<!-- DETAIL -->
+<!-- ══ DETAIL PAGE ══ -->
 <div id="page-detail" class="page">
   <div class="detail-hero" id="detail-hero"></div>
   <div class="scroll-area" id="detail-scroll">
@@ -269,11 +355,11 @@ body{font-family:var(--fb);}
   </div>
 </div>
 
-<!-- FORM -->
+<!-- ══ FORM PAGE ══ -->
 <div id="page-form" class="page">
   <div class="hdr hdr-sm">
     <div class="hdr-orn" style="margin-bottom:2px">✦ ✦ ✦</div>
-    <div class="hdr-title">ספר המתכונים שלי</div>
+    <div class="hdr-title">ספר המתכונים</div>
   </div>
   <div class="form-subhdr">
     <button class="form-back" id="btn-form-back">← חזרה</button>
@@ -291,7 +377,7 @@ body{font-family:var(--fb);}
 
 </div><!-- #app -->
 
-<!-- TIMER OVERLAY -->
+<!-- ══ TIMER OVERLAY ══ -->
 <div class="timer-overlay" id="timer-overlay">
   <div class="timer-box">
     <div class="timer-step-lbl" id="timer-step-lbl">⏱ טיימר</div>
@@ -304,7 +390,20 @@ body{font-family:var(--fb);}
   </div>
 </div>
 
-<!-- DELETE MODAL -->
+<!-- ══ SHARE SHEET ══ -->
+<div class="share-sheet" id="share-sheet">
+  <div class="share-box">
+    <div class="share-title">📤 שיתוף מתכון</div>
+    <div class="share-options">
+      <div class="share-opt" id="share-whatsapp"><div class="share-opt-icon">💬</div><div class="share-opt-label">ווטסאפ</div></div>
+      <div class="share-opt" id="share-sms"><div class="share-opt-icon">📱</div><div class="share-opt-label">הודעה</div></div>
+      <div class="share-opt" id="share-email"><div class="share-opt-icon">✉️</div><div class="share-opt-label">מייל</div></div>
+    </div>
+    <button class="share-cancel" id="share-cancel">ביטול</button>
+  </div>
+</div>
+
+<!-- ══ DELETE MODAL ══ -->
 <div class="modal-overlay" id="del-modal">
   <div class="modal-box">
     <div style="text-align:center;font-size:42px;margin-bottom:9px">🗑️</div>
@@ -317,7 +416,7 @@ body{font-family:var(--fb);}
   </div>
 </div>
 
-<!-- CATEGORY MODAL -->
+<!-- ══ CATEGORY MODAL ══ -->
 <div class="modal-overlay" id="cat-modal">
   <div class="modal-box" style="max-width:350px">
     <div class="modal-title">⚙️ ניהול קטגוריות</div>
@@ -333,9 +432,11 @@ body{font-family:var(--fb);}
   </div>
 </div>
 
-<!-- File inputs (hidden) -->
+<!-- Hidden inputs -->
 <input type="file" id="input-gallery" accept="image/*" style="display:none">
 <input type="file" id="input-camera" accept="image/*" capture="environment" style="display:none">
+<!-- Emoji keyboard trigger (hidden, activated programmatically) -->
+<input id="emoji-hidden-input" style="position:fixed;opacity:0;pointer-events:none;top:50%;left:50%;width:1px;height:1px;" inputmode="none">
 
 <script>
 'use strict';
@@ -345,198 +446,230 @@ body{font-family:var(--fb);}
 // ══════════════════════════════════════════════════════════════
 const CAT_COLORS={'אפייה':'#7C5C2C','מרקים':'#4A7C4E','קינוחים':'#8B3A3A','עיקריות':'#5A3E28','שימורים':'#3D6B45','סלטים':'#5B7A3D','ללא גלוטן':'#6B4E8B'};
 const CAT_ICONS={'אפייה':'🍞','מרקים':'🍲','קינוחים':'🍰','עיקריות':'🍽️','שימורים':'🫙','סלטים':'🥗','ללא גלוטן':'🌾'};
-const EMOJIS=['🍽️','🍞','🥗','🍅','🥩','🍎','🍓','🥒','🥐','🍜','🥘','🫕','🍲','🧁','🍰','🫙','🧆','🥚','🧅','🫑','🥦','🫐','🍋','🧄','🫒','🌽','🥕','🍄'];
 const DIFFS=['קל','בינוני','מורכב'];
 const FORM_STEPS=['פרטים','מצרכים','הכנה'];
 const DEFAULT_CATS=['אפייה','מרקים','קינוחים','עיקריות','שימורים','סלטים','ללא גלוטן'];
+const USERS_KEY='rb_users';
+const DATA_PREFIX='rb_data_';
+const SESSION_KEY='rb_session';
 
 // ══════════════════════════════════════════════════════════════
-//  PERSISTENT STORAGE  — migrates from all old keys automatically
+//  USER ACCOUNTS  (localStorage per-user)
 // ══════════════════════════════════════════════════════════════
-const LS_KEY = 'myRecipeBook';   // ← single permanent key, never changes again
-
-function loadState() {
-  try {
-    // Migrate from any previous version's key (so no data is ever lost)
-    const OLD_KEYS = ['recipeBook_v1','rb3','rb2','recipeBookState'];
-    for (const k of OLD_KEYS) {
-      const raw = localStorage.getItem(k);
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        OLD_KEYS.forEach(ok => localStorage.removeItem(ok));
-        localStorage.setItem(LS_KEY, raw);
-        return parsed;
-      }
+function getUsers(){ try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}');}catch(e){return{};} }
+function saveUsers(u){ try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch(e){} }
+function getUserData(username){
+  try{
+    // Migrate old single-user data to this user on first login
+    const raw=localStorage.getItem(DATA_PREFIX+username);
+    if(raw) return JSON.parse(raw);
+    // Check old keys for migration
+    const OLD=['myRecipeBook','recipeBook_v1','rb3','rb2'];
+    for(const k of OLD){
+      const v=localStorage.getItem(k);
+      if(v){const p=JSON.parse(v);OLD.forEach(ok=>localStorage.removeItem(ok));saveUserData(username,p);return p;}
     }
-    const saved = localStorage.getItem(LS_KEY);
-    if (saved) return JSON.parse(saved);
-  } catch(e) {}
-  // Truly first launch — empty cookbook
-  return { recipes: [], cats: DEFAULT_CATS };
+  }catch(e){}
+  return{recipes:[],cats:DEFAULT_CATS};
 }
-
-function saveState() {
-  try { localStorage.setItem(LS_KEY, JSON.stringify({ recipes: S.recipes, cats: S.cats })); } catch(e) {}
+function saveUserData(username,data){ try{localStorage.setItem(DATA_PREFIX+username,JSON.stringify(data));}catch(e){} }
+function hashPass(p){ let h=0;for(let i=0;i<p.length;i++){h=(Math.imul(31,h)+p.charCodeAt(i))|0;}return h.toString(36); }
+function registerUser(username,password){
+  const users=getUsers();
+  if(users[username]) return 'שם משתמש תפוס';
+  users[username]=hashPass(password);
+  saveUsers(users);
+  return null;
 }
+function loginUser(username,password){
+  const users=getUsers();
+  if(!users[username]) return 'שם משתמש לא קיים';
+  if(users[username]!==hashPass(password)) return 'סיסמא שגויה';
+  return null;
+}
+function getSession(){ try{return localStorage.getItem(SESSION_KEY)||'';}catch(e){return '';} }
+function setSession(u){ try{localStorage.setItem(SESSION_KEY,u);}catch(e){} }
+function clearSession(){ try{localStorage.removeItem(SESSION_KEY);}catch(e){} }
 
 // ══════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════
-const _loaded = loadState();
-const S = {
-  recipes:       _loaded.recipes,
-  cats:          _loaded.cats,
-  page:          'home',
-  activeCat:     'הכל',
-  favOnly:       false,
-  detailId:      null,
-  detailServings:null,
-  editMode:      false,
-  delTargetId:   null,
-  editCatIdx:    null,
-  formStep:      1,
-  fd:            null,
-};
+let CU=''; // current user
+const S={recipes:[],cats:[...DEFAULT_CATS],page:'login',activeCat:'הכל',favOnly:false,detailId:null,detailServings:null,editMode:false,delTargetId:null,editCatIdx:null,formStep:1,fd:null,shareId:null,dragSrcIdx:null};
+
+function loadUserState(){
+  const d=getUserData(CU);
+  S.recipes=d.recipes||[];
+  S.cats=d.cats||[...DEFAULT_CATS];
+}
+function saveState(){ saveUserData(CU,{recipes:S.recipes,cats:S.cats}); }
 
 // ══════════════════════════════════════════════════════════════
 //  UTILS
 // ══════════════════════════════════════════════════════════════
-function esc(v){ return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function g(id){ return document.getElementById(id); }
-function cColor(c){ return CAT_COLORS[c]||'#7C5C2C'; }
-function cIcon(c){ return CAT_ICONS[c]||'🍽️'; }
-function fmtTime(s){
-  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60), sec=s%60;
-  if(h>0) return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
-  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+function esc(v){return String(v==null?'':v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function g(id){return document.getElementById(id);}
+function cColor(c){return CAT_COLORS[c]||'#7C5C2C';}
+function cIcon(c){return CAT_ICONS[c]||'🍽️';}
+function fmtTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
+
+// Format recipe as plain text for sharing
+function recipeToText(r){
+  let t=`✦ ${r.title} ✦\n`;
+  t+=`⏱ ${r.time}  |  👥 ${r.servings} מנות  |  📊 ${r.difficulty}\n\n`;
+  if(r.description) t+=`${r.description}\n\n`;
+  t+='🌿 מצרכים:\n';
+  if(r.ingredientGroups&&r.ingredientGroups.length){
+    r.ingredientGroups.forEach(grp=>{
+      if(grp.name) t+=`\n— ${grp.name} —\n`;
+      grp.items.forEach(i=>t+=`• ${i}\n`);
+    });
+  } else {
+    r.ingredients.forEach(i=>t+=`• ${i}\n`);
+  }
+  t+='\n📋 אופן הכנה:\n';
+  r.steps.forEach((s,i)=>t+=`${i+1}. ${s}\n`);
+  t+='\n— נשלח מספר המתכונים שלי —';
+  return t;
 }
 
 // ══════════════════════════════════════════════════════════════
-//  AUTOCOMPLETE ENGINE
-//  Builds a frequency map of full ingredient phrases across all recipes.
-//  On each keystroke, suggests phrases that START WITH or CONTAIN the typed text,
-//  ranked by how often they appear.
+//  LOGIN / REGISTER
 // ══════════════════════════════════════════════════════════════
-function buildIngFreq() {
-  const freq = {};
-  S.recipes.forEach(r => {
-    r.ingredients.forEach(ing => {
-      const k = ing.trim();
-      if (k.length > 1) freq[k] = (freq[k]||0) + 1;
-    });
+let loginMode='login';
+function initLogin(){
+  const users=getUsers();
+  const count=Object.keys(users).length;
+  g('login-users-hint').textContent=count?`${count} משתמשים רשומים`:'';
+  g('tab-login').addEventListener('click',()=>setLoginMode('login'));
+  g('tab-register').addEventListener('click',()=>setLoginMode('register'));
+  g('btn-do-login').addEventListener('click',doLogin);
+  g('login-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+  g('login-username').addEventListener('keydown',e=>{if(e.key==='Enter')g('login-password').focus();});
+}
+function setLoginMode(mode){
+  loginMode=mode;
+  g('tab-login').classList.toggle('active',mode==='login');
+  g('tab-register').classList.toggle('active',mode==='register');
+  g('btn-do-login').textContent=mode==='login'?'כניסה לספר שלי ←':'צור חשבון ←';
+  g('login-err').textContent='';
+}
+function doLogin(){
+  const u=g('login-username').value.trim();
+  const p=g('login-password').value;
+  if(!u||!p){g('login-err').textContent='נא למלא שם משתמש וסיסמא';return;}
+  let err=null;
+  if(loginMode==='register') err=registerUser(u,p);
+  else err=loginUser(u,p);
+  if(err){g('login-err').textContent=err;return;}
+  CU=u;
+  setSession(u);
+  loadUserState();
+  enterApp();
+}
+function enterApp(){
+  g('hdr-username').textContent='שלום, '+CU+' 👋';
+  showPage('home');
+  renderHome();
+}
+function doLogout(){
+  clearSession();
+  CU='';
+  S.recipes=[];
+  S.cats=[...DEFAULT_CATS];
+  g('login-username').value='';
+  g('login-password').value='';
+  g('login-err').textContent='';
+  showPage('login');
+}
+
+// ══════════════════════════════════════════════════════════════
+//  AUTOCOMPLETE
+// ══════════════════════════════════════════════════════════════
+function buildIngFreq(){
+  const freq={};
+  S.recipes.forEach(r=>{
+    const ings=[...( r.ingredients||[]),...(r.ingredientGroups||[]).flatMap(g=>g.items||[])];
+    ings.forEach(ing=>{const k=ing.trim();if(k.length>1)freq[k]=(freq[k]||0)+1;});
   });
   return freq;
 }
-
-function getACSuggestions(val) {
-  const v = val.trim();
-  if (v.length < 2) return [];
-  const freq = buildIngFreq();
-  return Object.entries(freq)
-    .filter(([phrase]) => phrase !== v && phrase.includes(v))
-    .sort((a, b) => {
-      // Prefer phrases that START with the typed text
-      const aStarts = a[0].startsWith(v) ? 1 : 0;
-      const bStarts = b[0].startsWith(v) ? 1 : 0;
-      if (bStarts !== aStarts) return bStarts - aStarts;
-      return b[1] - a[1]; // then by frequency
-    })
-    .slice(0, 5)
-    .map(([phrase]) => phrase);
+function getACSuggestions(val){
+  const v=val.trim();if(v.length<2)return[];
+  const freq=buildIngFreq();
+  return Object.entries(freq).filter(([p])=>p!==v&&p.includes(v)).sort((a,b)=>{
+    const as=a[0].startsWith(v)?1:0,bs=b[0].startsWith(v)?1:0;
+    if(bs!==as)return bs-as;return b[1]-a[1];
+  }).slice(0,5).map(([p])=>p);
 }
-
-let _acActiveIdx = -1;
-
-function showACDropdown(wrapEl, inputEl, suggestions, onSelect) {
-  removeACDropdown();
-  if (!suggestions.length) return;
-  _acActiveIdx = -1;
-  const dd = document.createElement('div');
-  dd.className = 'ac-dropdown';
-  dd.id = 'ac-dd';
-  suggestions.forEach((s, i) => {
-    const item = document.createElement('div');
-    item.className = 'ac-item';
-    // Highlight matched portion
-    const v = inputEl.value.trim();
-    const idx = s.indexOf(v);
-    if (idx >= 0) {
-      item.innerHTML = esc(s.slice(0,idx)) +
-        '<span class="ac-match">'+esc(s.slice(idx,idx+v.length))+'</span>' +
-        esc(s.slice(idx+v.length));
-    } else { item.textContent = s; }
-    item.addEventListener('mousedown', e => { e.preventDefault(); onSelect(s); removeACDropdown(); });
-    item.addEventListener('touchstart', e => { e.preventDefault(); onSelect(s); removeACDropdown(); }, {passive:false});
+let _acIdx=-1;
+function showACDropdown(wrapEl,inputEl,suggestions,onSelect){
+  removeACDropdown();if(!suggestions.length)return;_acIdx=-1;
+  const dd=document.createElement('div');dd.className='ac-dropdown';dd.id='ac-dd';
+  suggestions.forEach(s=>{
+    const item=document.createElement('div');item.className='ac-item';
+    const v=inputEl.value.trim(),idx=s.indexOf(v);
+    if(idx>=0)item.innerHTML=esc(s.slice(0,idx))+'<span class="ac-match">'+esc(s.slice(idx,idx+v.length))+'</span>'+esc(s.slice(idx+v.length));
+    else item.textContent=s;
+    item.addEventListener('mousedown',e=>{e.preventDefault();onSelect(s);removeACDropdown();});
+    item.addEventListener('touchstart',e=>{e.preventDefault();onSelect(s);removeACDropdown();},{passive:false});
     dd.appendChild(item);
   });
   wrapEl.appendChild(dd);
-
-  // Keyboard navigation for the input
-  inputEl._acKeyHandler = e => {
-    const items = dd.querySelectorAll('.ac-item');
-    if (e.key === 'ArrowDown') { e.preventDefault(); _acActiveIdx=Math.min(_acActiveIdx+1,items.length-1); items.forEach((it,i)=>it.classList.toggle('hov',i===_acActiveIdx)); }
-    else if (e.key === 'ArrowUp') { e.preventDefault(); _acActiveIdx=Math.max(_acActiveIdx-1,0); items.forEach((it,i)=>it.classList.toggle('hov',i===_acActiveIdx)); }
-    else if (e.key === 'Enter' && _acActiveIdx >= 0) { e.preventDefault(); onSelect(suggestions[_acActiveIdx]); removeACDropdown(); }
-    else if (e.key === 'Escape') removeACDropdown();
+  inputEl._acKH=e=>{
+    const items=dd.querySelectorAll('.ac-item');
+    if(e.key==='ArrowDown'){e.preventDefault();_acIdx=Math.min(_acIdx+1,items.length-1);items.forEach((it,i)=>it.classList.toggle('hov',i===_acIdx));}
+    else if(e.key==='ArrowUp'){e.preventDefault();_acIdx=Math.max(_acIdx-1,0);items.forEach((it,i)=>it.classList.toggle('hov',i===_acIdx));}
+    else if(e.key==='Enter'&&_acIdx>=0){e.preventDefault();onSelect(suggestions[_acIdx]);removeACDropdown();}
+    else if(e.key==='Escape')removeACDropdown();
   };
-  inputEl.addEventListener('keydown', inputEl._acKeyHandler);
+  inputEl.addEventListener('keydown',inputEl._acKH);
 }
-
-function removeACDropdown() {
-  const d = g('ac-dd'); if (d) d.remove();
-  // Clean up key handler from all inputs
-  document.querySelectorAll('[data-ingidx]').forEach(inp => {
-    if (inp._acKeyHandler) { inp.removeEventListener('keydown', inp._acKeyHandler); inp._acKeyHandler=null; }
-  });
+function removeACDropdown(){
+  const d=g('ac-dd');if(d)d.remove();
+  document.querySelectorAll('[data-ingidx]').forEach(inp=>{if(inp._acKH){inp.removeEventListener('keydown',inp._acKH);inp._acKH=null;}});
 }
 
 // ══════════════════════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════════════════════
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); g('page-'+name).classList.add('active'); S.page=name; }
-function goHome() { removeACDropdown(); showPage('home'); renderHome(); }
+function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));g('page-'+name).classList.add('active');S.page=name;}
+function goHome(){removeACDropdown();showPage('home');renderHome();}
 
 // ══════════════════════════════════════════════════════════════
 //  HOME
 // ══════════════════════════════════════════════════════════════
-function renderHome() {
-  renderCatBar(); renderCards();
-  g('hdr-count').textContent = S.recipes.length+' מתכונים · '+S.recipes.filter(r=>r.favorite).length+' מועדפים';
-  g('btn-fav-toggle').classList.toggle('on', S.favOnly);
+function renderHome(){
+  renderCatBar();renderCards();
+  g('hdr-count').textContent=S.recipes.length+' מתכונים · '+S.recipes.filter(r=>r.favorite).length+' מועדפים';
+  g('btn-fav-toggle').classList.toggle('on',S.favOnly);
 }
-
-function renderCatBar() {
-  const all = ['הכל', ...S.cats];
-  g('cat-bar').innerHTML = all.map(cat => {
-    const a = S.activeCat===cat;
-    const bg = a ? cColor(cat) : '';
-    const style = a ? ` style="background:${bg};border-color:${bg};color:#FFF9EE;font-weight:600"` : '';
+function renderCatBar(){
+  const all=['הכל',...S.cats];
+  g('cat-bar').innerHTML=all.map(cat=>{
+    const a=S.activeCat===cat,bg=a?cColor(cat):'',style=a?` style="background:${bg};border-color:${bg};color:#FFF9EE;font-weight:600"`:' ';
     return `<button class="cat-pill${a?' active':''}"${style} data-setcat="${esc(cat)}">${cat!=='הכל'?cIcon(cat)+' ':''}${esc(cat)}</button>`;
-  }).join('') + '<button class="cat-manage-pill" data-opencats="1">+ ניהול</button>';
+  }).join('')+'<button class="cat-manage-pill" data-opencats="1">+ ניהול</button>';
 }
-
-function renderCards() {
-  const q = g('search-input').value.toLowerCase().trim();
-  const list = S.recipes.filter(r => {
-    if (S.favOnly && !r.favorite) return false;
-    if (S.activeCat!=='הכל' && r.category!==S.activeCat) return false;
-    if (q) return r.title.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||r.tags.some(t=>t.toLowerCase().includes(q));
+function renderCards(){
+  const q=g('search-input').value.toLowerCase().trim();
+  const list=S.recipes.filter(r=>{
+    if(S.favOnly&&!r.favorite)return false;
+    if(S.activeCat!=='הכל'&&r.category!==S.activeCat)return false;
+    if(q)return r.title.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q));
     return true;
   });
-  g('filter-count').textContent = list.length+' מתכונים'+(S.favOnly?' מועדפים':'')+(S.activeCat!=='הכל'?' ב'+S.activeCat:'');
-  if (!list.length) {
-    const isFirst = S.recipes.length===0;
-    g('cards-list').innerHTML = `<div class="empty-state"><div class="empty-icon">${isFirst?'📖':'📭'}</div><div style="font-style:italic">${isFirst?'הספר ריק עדיין':'לא נמצאו מתכונים'}</div>${isFirst?'<div class="empty-hint">לחץ ✏️ מתכון חדש כדי להתחיל</div>':''}</div>`;
-    return;
-  }
-  g('cards-list').innerHTML = list.map((r,i) => {
-    const cc=cColor(r.category), ci=cIcon(r.category);
-    return `<div class="card" data-openid="${r.id}" style="animation-delay:${i*.04}s">
+  g('filter-count').textContent=list.length+' מתכונים'+(S.favOnly?' מועדפים':'')+(S.activeCat!=='הכל'?' ב'+S.activeCat:'');
+  if(!list.length){const f=S.recipes.length===0;g('cards-list').innerHTML=`<div class="empty-state"><div class="empty-icon">${f?'📖':'📭'}</div><div style="font-style:italic">${f?'הספר ריק':'לא נמצאו מתכונים'}</div>${f?'<div class="empty-hint">לחץ ✏️ חדש כדי להתחיל</div>':''}</div>`;return;}
+  g('cards-list').innerHTML=list.map((r,i)=>{
+    const cc=cColor(r.category),ci=cIcon(r.category);
+    return `<div class="card" data-openid="${r.id}" data-listidx="${i}" style="animation-delay:${i*.03}s" draggable="true">
       ${r.image?`<img class="card-img" src="${esc(r.image)}" alt="">`:'' }
       <div class="card-accent" style="background:${cc}"></div>
+      <div class="card-drag-handle" data-draghandle="1" title="גרור לסידור">⠿</div>
       <div class="card-body">
         <div class="card-top">
-          <span class="card-emoji">${r.emoji}</span>
+          <span class="card-emoji">${r.emoji||'🍽️'}</span>
           <div class="card-info">
             <div class="card-title">${esc(r.title)}</div>
             <span class="card-cat-badge" style="background:${cc}">${ci} ${esc(r.category)}</span>
@@ -548,66 +681,131 @@ function renderCards() {
       </div>
     </div>`;
   }).join('');
+  initDragDrop();
+}
+
+// ── DRAG & DROP REORDER ──────────────────────────────────────
+let _dragSrc=null,_dragSrcId=null;
+function initDragDrop(){
+  const cards=g('cards-list').querySelectorAll('.card');
+  cards.forEach(card=>{
+    card.addEventListener('dragstart',e=>{
+      _dragSrcId=+card.dataset.openid;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+    });
+    card.addEventListener('dragend',()=>{ card.classList.remove('dragging'); g('cards-list').querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over')); });
+    card.addEventListener('dragover',e=>{
+      e.preventDefault();e.dataTransfer.dropEffect='move';
+      g('cards-list').querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over'));
+      card.classList.add('drag-over');
+    });
+    card.addEventListener('drop',e=>{
+      e.preventDefault();card.classList.remove('drag-over');
+      const targetId=+card.dataset.openid;
+      if(_dragSrcId===targetId)return;
+      const srcI=S.recipes.findIndex(r=>r.id===_dragSrcId);
+      const tgtI=S.recipes.findIndex(r=>r.id===targetId);
+      if(srcI<0||tgtI<0)return;
+      const [moved]=S.recipes.splice(srcI,1);
+      S.recipes.splice(tgtI,0,moved);
+      saveState();renderCards();
+    });
+    // Touch drag
+    let touchStartY=0,touchCard=null;
+    card.addEventListener('touchstart',e=>{
+      if(!e.target.closest('[data-draghandle]'))return;
+      touchStartY=e.touches[0].clientY;
+      _dragSrcId=+card.dataset.openid;
+      touchCard=card;
+      card.classList.add('dragging');
+    },{passive:true});
+    card.addEventListener('touchmove',e=>{
+      if(!touchCard)return;
+      e.preventDefault();
+      const y=e.touches[0].clientY;
+      const els=document.elementsFromPoint(e.touches[0].clientX,y);
+      const target=els.find(el=>el.classList.contains('card')&&el!==touchCard);
+      g('cards-list').querySelectorAll('.card').forEach(c=>c.classList.remove('drag-over'));
+      if(target)target.classList.add('drag-over');
+    },{passive:false});
+    card.addEventListener('touchend',e=>{
+      if(!touchCard)return;
+      touchCard.classList.remove('dragging');
+      const target=g('cards-list').querySelector('.card.drag-over');
+      if(target){
+        target.classList.remove('drag-over');
+        const targetId=+target.dataset.openid;
+        if(_dragSrcId!==targetId){
+          const si=S.recipes.findIndex(r=>r.id===_dragSrcId),ti=S.recipes.findIndex(r=>r.id===targetId);
+          if(si>=0&&ti>=0){const[m]=S.recipes.splice(si,1);S.recipes.splice(ti,0,m);saveState();renderCards();}
+        }
+      }
+      touchCard=null;
+    });
+  });
 }
 
 // ══════════════════════════════════════════════════════════════
 //  DETAIL
 // ══════════════════════════════════════════════════════════════
-function openDetail(id) { S.detailId=id; S.detailServings=null; renderDetail(); showPage('detail'); g('detail-scroll').scrollTop=0; }
+function openDetail(id){S.detailId=id;S.detailServings=null;renderDetail();showPage('detail');g('detail-scroll').scrollTop=0;}
+function renderDetail(){
+  const r=S.recipes.find(x=>x.id===S.detailId);if(!r)return;
+  const srv=S.detailServings||r.servings,ratio=srv/(r.servings||1);
 
-function renderDetail() {
-  const r = S.recipes.find(x=>x.id===S.detailId); if(!r) return;
-  const srv = S.detailServings||r.servings;
-  const ratio = srv/(r.servings||1);
-
-  g('detail-hero').innerHTML = `
+  g('detail-hero').innerHTML=`
     <button class="back-btn" id="btn-det-back">← חזרה</button>
-    ${r.image?`<img class="detail-img-hero" src="${esc(r.image)}" alt="">`:`<div class="detail-emoji">${r.emoji}</div>`}
+    ${r.image?`<img class="detail-img-hero" src="${esc(r.image)}" alt="">`:`<div class="detail-emoji">${r.emoji||'🍽️'}</div>`}
     <div class="detail-title">${esc(r.title)}</div>
     <div class="detail-badges"><span class="badge">⏱ ${esc(r.time)}</span><span class="badge">📊 ${esc(r.difficulty)}</span></div>
     <div class="detail-actions">
       <button class="act-btn act-fav${r.favorite?' on':''}" id="btn-det-fav">${r.favorite?'★ מועדף':'☆ מועדף'}</button>
       <button class="act-btn act-gold" id="btn-det-edit">✏️ עריכה</button>
+      <button class="act-btn act-green" id="btn-det-share">📤 שיתוף</button>
       <button class="act-btn act-red" id="btn-det-del">🗑 מחיקה</button>
     </div>`;
+  g('btn-det-back').addEventListener('click',goHome);
+  g('btn-det-fav').addEventListener('click',()=>toggleFav(r.id));
+  g('btn-det-edit').addEventListener('click',()=>openEdit(r.id));
+  g('btn-det-share').addEventListener('click',()=>openShare(r.id));
+  g('btn-det-del').addEventListener('click',()=>openDelModal(r.id));
 
-  g('btn-det-back').addEventListener('click', goHome);
-  g('btn-det-fav').addEventListener('click', ()=>toggleFav(r.id));
-  g('btn-det-edit').addEventListener('click', ()=>openEdit(r.id));
-  g('btn-det-del').addEventListener('click', ()=>openDelModal(r.id));
-
-  function scaleIng(raw) {
-    if (ratio===1) return esc(raw);
-    return esc(raw).replace(/(\d+(?:[.,]\d+)?(?:\/\d+)?)/g, match => {
-      const parts = match.split('/');
-      let n = parts.length===2 ? +parts[0]/+parts[1] : parseFloat(match.replace(',','.'));
-      if (isNaN(n)) return match;
-      const sc = n*ratio;
-      if (Math.abs(sc-Math.round(sc))<.06) return `<span class="ing-amount">${Math.round(sc)}</span>`;
-      if (Math.abs(sc-.25)<.06) return '<span class="ing-amount">¼</span>';
-      if (Math.abs(sc-.5)<.06)  return '<span class="ing-amount">½</span>';
-      if (Math.abs(sc-.75)<.06) return '<span class="ing-amount">¾</span>';
-      if (Math.abs(sc-1.5)<.06) return '<span class="ing-amount">1½</span>';
-      return `<span class="ing-amount">${(Math.round(sc*4)/4)}</span>`;
+  function scaleIng(raw){
+    if(ratio===1)return esc(raw);
+    return esc(raw).replace(/(\d+(?:[.,]\d+)?(?:\/\d+)?)/g,match=>{
+      const parts=match.split('/');let n=parts.length===2?+parts[0]/+parts[1]:parseFloat(match.replace(',','.'));
+      if(isNaN(n))return match;const sc=n*ratio;
+      if(Math.abs(sc-Math.round(sc))<.06)return`<span class="ing-amount">${Math.round(sc)}</span>`;
+      if(Math.abs(sc-.25)<.06)return'<span class="ing-amount">¼</span>';
+      if(Math.abs(sc-.5)<.06)return'<span class="ing-amount">½</span>';
+      if(Math.abs(sc-.75)<.06)return'<span class="ing-amount">¾</span>';
+      if(Math.abs(sc-1.5)<.06)return'<span class="ing-amount">1½</span>';
+      return`<span class="ing-amount">${Math.round(sc*4)/4}</span>`;
     });
   }
-  function stepSecs(txt) {
-    const m = txt.match(/(\d+)\s*(דקות?|שעות?|שעה|שניות?)/);
-    if (!m) return 0;
-    if (m[2].startsWith('שעה')||m[2].startsWith('שעות')) return +m[1]*3600;
-    if (m[2].startsWith('שניות')||m[2].startsWith('שנייה')) return +m[1];
-    return +m[1]*60;
+  function stepSecs(txt){const m=txt.match(/(\d+)\s*(דקות?|שעות?|שעה|שניות?)/);if(!m)return 0;if(m[2].startsWith('שעה')||m[2].startsWith('שעות'))return+m[1]*3600;if(m[2].startsWith('שניות')||m[2].startsWith('שנייה'))return+m[1];return+m[1]*60;}
+
+  const tags=(r.tags||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('');
+
+  // Render ingredients — support both old flat array & new grouped format
+  let ingsHTML='';
+  if(r.ingredientGroups&&r.ingredientGroups.length){
+    r.ingredientGroups.forEach(grp=>{
+      if(grp.name)ingsHTML+=`<div class="ing-group-title">— ${esc(grp.name)} —</div>`;
+      (grp.items||[]).forEach(i=>{ingsHTML+=`<div class="ing-item"><span class="ing-dot">✦</span><span>${scaleIng(i)}</span></div>`;});
+    });
+  } else {
+    (r.ingredients||[]).forEach(i=>{ingsHTML+=`<div class="ing-item"><span class="ing-dot">✦</span><span>${scaleIng(i)}</span></div>`;});
   }
 
-  const tags = r.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('');
-  const ings = r.ingredients.map(i=>`<div class="ing-item"><span class="ing-dot">✦</span><span>${scaleIng(i)}</span></div>`).join('');
-  const steps = r.steps.map((s,i)=>{
+  const steps=(r.steps||[]).map((s,i)=>{
     const secs=stepSecs(s);
     const tb=secs?`<br><button class="timer-btn" data-tsecs="${secs}" data-tstep="${i+1}">⏱ הפעל טיימר · ${fmtTime(secs)}</button>`:'';
-    return `<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${esc(s)}${tb}</div></div>`;
+    return`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${esc(s)}${tb}</div></div>`;
   }).join('');
 
-  g('detail-body').innerHTML = `<div class="detail-body-inner">
+  g('detail-body').innerHTML=`<div class="detail-body-inner">
     <p class="detail-quote">${esc(r.description)}</p>
     ${tags?`<div class="tags-row">${tags}</div>`:''}
     <div class="section-title"><span>🌿</span> מצרכים</div>
@@ -617,145 +815,151 @@ function renderDetail() {
       <span class="servings-count">${srv}</span>
       <button class="srv-btn" id="btn-srv-plus">+</button>
     </div>
-    <div style="margin-bottom:20px">${ings}</div>
+    <div style="margin-bottom:18px">${ingsHTML}</div>
     <div class="section-title"><span>📋</span> אופן הכנה</div>
     ${steps}
     <div class="detail-footer">✦ ✦ ✦</div>
   </div>`;
 
-  g('btn-srv-minus').addEventListener('click', ()=>changeServings(-1));
-  g('btn-srv-plus').addEventListener('click',  ()=>changeServings(1));
-  g('detail-body').querySelectorAll('.timer-btn').forEach(btn=>{
-    btn.addEventListener('click', ()=>openTimer(+btn.dataset.tsecs, +btn.dataset.tstep));
-  });
+  g('btn-srv-minus').addEventListener('click',()=>changeServings(-1));
+  g('btn-srv-plus').addEventListener('click',()=>changeServings(1));
+  g('detail-body').querySelectorAll('.timer-btn').forEach(btn=>{btn.addEventListener('click',()=>openTimer(+btn.dataset.tsecs,+btn.dataset.tstep));});
+}
+function changeServings(d){
+  const r=S.recipes.find(x=>x.id===S.detailId);if(!r)return;
+  S.detailServings=Math.max(1,(S.detailServings||r.servings)+d);
+  const sy=g('detail-scroll').scrollTop;renderDetail();g('detail-scroll').scrollTop=sy;
+}
+function toggleFav(id){
+  S.recipes=S.recipes.map(r=>r.id===id?{...r,favorite:!r.favorite}:r);saveState();renderCards();
+  g('hdr-count').textContent=S.recipes.length+' מתכונים · '+S.recipes.filter(r=>r.favorite).length+' מועדפים';
+  const btn=g('btn-det-fav');if(btn){const r=S.recipes.find(x=>x.id===id);btn.textContent=r&&r.favorite?'★ מועדף':'☆ מועדף';btn.classList.toggle('on',!!(r&&r.favorite));}
 }
 
-function changeServings(d) {
-  const r=S.recipes.find(x=>x.id===S.detailId); if(!r) return;
-  S.detailServings = Math.max(1, (S.detailServings||r.servings)+d);
-  const sy = g('detail-scroll').scrollTop;
-  renderDetail();
-  g('detail-scroll').scrollTop = sy;
-}
-
-function toggleFav(id) {
-  S.recipes = S.recipes.map(r=>r.id===id?{...r,favorite:!r.favorite}:r);
-  saveState(); renderCards();
-  g('hdr-count').textContent = S.recipes.length+' מתכונים · '+S.recipes.filter(r=>r.favorite).length+' מועדפים';
-  const btn=g('btn-det-fav');
-  if (btn) { const r=S.recipes.find(x=>x.id===id); btn.textContent=r&&r.favorite?'★ מועדף':'☆ מועדף'; btn.classList.toggle('on',!!(r&&r.favorite)); }
+// ══════════════════════════════════════════════════════════════
+//  SHARE
+// ══════════════════════════════════════════════════════════════
+function openShare(id){S.shareId=id;g('share-sheet').classList.add('show');}
+function closeShare(){g('share-sheet').classList.remove('show');S.shareId=null;}
+function doShare(channel){
+  const r=S.recipes.find(x=>x.id===S.shareId);if(!r)return;
+  const txt=recipeToText(r);
+  const enc=encodeURIComponent(txt);
+  if(channel==='whatsapp') window.open('https://wa.me/?text='+enc,'_blank');
+  else if(channel==='sms') window.open('sms:?body='+enc,'_blank');
+  else if(channel==='email') window.open('mailto:?subject='+encodeURIComponent('מתכון: '+r.title)+'&body='+enc,'_blank');
+  closeShare();
 }
 
 // ══════════════════════════════════════════════════════════════
 //  DELETE MODAL
 // ══════════════════════════════════════════════════════════════
-function openDelModal(id) { S.delTargetId=id; const r=S.recipes.find(x=>x.id===id); g('del-modal-text').innerHTML='האם למחוק את <strong>"'+esc(r.title)+'"</strong>?<br>פעולה זו אינה ניתנת לביטול.'; g('del-modal').classList.add('show'); }
-function closeDelModal() { g('del-modal').classList.remove('show'); S.delTargetId=null; }
-function confirmDelete() { S.recipes=S.recipes.filter(r=>r.id!==S.delTargetId); saveState(); closeDelModal(); goHome(); }
+function openDelModal(id){S.delTargetId=id;const r=S.recipes.find(x=>x.id===id);g('del-modal-text').innerHTML='האם למחוק את <strong>"'+esc(r.title)+'"</strong>?<br>פעולה זו אינה ניתנת לביטול.';g('del-modal').classList.add('show');}
+function closeDelModal(){g('del-modal').classList.remove('show');S.delTargetId=null;}
+function confirmDelete(){S.recipes=S.recipes.filter(r=>r.id!==S.delTargetId);saveState();closeDelModal();goHome();}
 
 // ══════════════════════════════════════════════════════════════
 //  CATEGORY MODAL
 // ══════════════════════════════════════════════════════════════
-function openCatModal() { S.editCatIdx=null; renderCatList(); g('cat-modal').classList.add('show'); }
-function closeCatModal() { g('cat-modal').classList.remove('show'); S.editCatIdx=null; renderCatBar(); }
-
-function renderCatList() {
-  g('cat-modal-list').innerHTML = S.cats.map((cat,i)=>{
-    if (S.editCatIdx===i) return `<div class="cat-row"><span class="cat-row-icon">${cIcon(cat)}</span><input class="cat-edit-inp" id="ceinp-${i}" value="${esc(cat)}" data-cidx="${i}"><div class="cat-actions"><button class="cat-act-btn gold" id="cesave-${i}">✓</button><button class="cat-act-btn gray" id="cecancel">✕</button></div></div>`;
-    return `<div class="cat-row"><span class="cat-row-icon">${cIcon(cat)}</span><span class="cat-row-name">${esc(cat)}</span><div class="cat-actions"><button class="cat-act-btn" data-catedit="${i}">✏️</button><button class="cat-act-btn red" data-catdel="${i}">🗑</button></div></div>`;
+function openCatModal(){S.editCatIdx=null;renderCatList();g('cat-modal').classList.add('show');}
+function closeCatModal(){g('cat-modal').classList.remove('show');S.editCatIdx=null;renderCatBar();}
+function renderCatList(){
+  g('cat-modal-list').innerHTML=S.cats.map((cat,i)=>{
+    if(S.editCatIdx===i)return`<div class="cat-row"><span class="cat-row-icon">${cIcon(cat)}</span><input class="cat-edit-inp" id="ceinp-${i}" value="${esc(cat)}" data-cidx="${i}"><div class="cat-actions"><button class="cat-act-btn gold" id="cesave-${i}">✓</button><button class="cat-act-btn gray" id="cecancel">✕</button></div></div>`;
+    return`<div class="cat-row"><span class="cat-row-icon">${cIcon(cat)}</span><span class="cat-row-name">${esc(cat)}</span><div class="cat-actions"><button class="cat-act-btn" data-catedit="${i}">✏️</button><button class="cat-act-btn red" data-catdel="${i}">🗑</button></div></div>`;
   }).join('');
   g('cat-modal-list').querySelectorAll('[data-catedit]').forEach(b=>b.addEventListener('click',()=>{S.editCatIdx=+b.dataset.catedit;renderCatList();}));
   g('cat-modal-list').querySelectorAll('[data-catdel]').forEach(b=>b.addEventListener('click',()=>{const cat=S.cats[+b.dataset.catdel];S.cats.splice(+b.dataset.catdel,1);if(S.activeCat===cat)S.activeCat='הכל';saveState();renderCatList();}));
-  if (S.editCatIdx!==null) {
-    const idx=S.editCatIdx, inp=g('ceinp-'+idx), save=g('cesave-'+idx), cancel=g('cecancel');
+  if(S.editCatIdx!==null){
+    const idx=S.editCatIdx,inp=g('ceinp-'+idx),save=g('cesave-'+idx),cancel=g('cecancel');
     if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveCat(idx);if(e.key==='Escape'){S.editCatIdx=null;renderCatList();}});}
     if(save)save.addEventListener('click',()=>saveCat(idx));
     if(cancel)cancel.addEventListener('click',()=>{S.editCatIdx=null;renderCatList();});
   }
 }
-function saveCat(i) {
-  const inp=g('ceinp-'+i); if(!inp||!inp.value.trim())return;
-  const old=S.cats[i], nw=inp.value.trim();
-  S.cats[i]=nw; S.recipes=S.recipes.map(r=>r.category===old?{...r,category:nw}:r);
-  if(S.activeCat===old)S.activeCat=nw; saveState(); S.editCatIdx=null; renderCatList();
-}
-function addCategory() {
-  const inp=g('new-cat-inp'), name=inp.value.trim();
-  if(!name||S.cats.includes(name))return;
-  S.cats.push(name); inp.value=''; saveState(); renderCatList();
-}
+function saveCat(i){const inp=g('ceinp-'+i);if(!inp||!inp.value.trim())return;const old=S.cats[i],nw=inp.value.trim();S.cats[i]=nw;S.recipes=S.recipes.map(r=>r.category===old?{...r,category:nw}:r);if(S.activeCat===old)S.activeCat=nw;saveState();S.editCatIdx=null;renderCatList();}
+function addCategory(){const inp=g('new-cat-inp'),name=inp.value.trim();if(!name||S.cats.includes(name))return;S.cats.push(name);inp.value='';saveState();renderCatList();}
 
 // ══════════════════════════════════════════════════════════════
 //  TIMER
 // ══════════════════════════════════════════════════════════════
-const T = { total:0, remaining:0, running:false, interval:null, step:0 };
-function openTimer(secs,step) { clearInterval(T.interval);T.running=false;T.total=secs;T.remaining=secs;T.step=step;updateTimerUI();g('timer-overlay').classList.add('show'); }
-function closeTimer() { clearInterval(T.interval);T.running=false;g('timer-overlay').classList.remove('show'); }
-function toggleTimer() { T.running?pauseTimer():startTimer(); }
-function startTimer() {
-  if(T.remaining<=0)T.remaining=T.total;
-  T.running=true; g('btn-timer-toggle').textContent='⏸ עצור';
-  T.interval=setInterval(()=>{T.remaining--;updateTimerUI();if(T.remaining<=0){clearInterval(T.interval);T.running=false;timerDone();}},1000);
-}
-function pauseTimer() { clearInterval(T.interval);T.running=false;g('btn-timer-toggle').textContent=T.remaining<T.total?'▶ המשך':'▶ התחל'; }
-function timerDone() {
-  g('timer-display').textContent='✓ סיום!'; g('timer-display').classList.add('urgent'); g('btn-timer-toggle').textContent='🔄 שוב';
-  if(navigator.vibrate)navigator.vibrate([400,200,400,200,400]);
-  try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.35,.7].forEach(t=>{const o=ctx.createOscillator(),gn=ctx.createGain();o.connect(gn);gn.connect(ctx.destination);o.frequency.value=880;gn.gain.setValueAtTime(.4,ctx.currentTime+t);gn.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.28);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3);});}catch(e){}
-}
-function updateTimerUI() {
-  const d=g('timer-display'),f=g('timer-fill'),l=g('timer-step-lbl'),b=g('btn-timer-toggle');
-  if(!d)return;
-  d.textContent=fmtTime(T.remaining); d.classList.toggle('urgent',T.remaining<=10&&T.running);
-  if(f)f.style.width=(T.total>0?T.remaining/T.total*100:100)+'%';
-  if(l)l.textContent='⏱ שלב '+T.step;
-  if(b&&T.remaining>0)b.textContent=T.running?'⏸ עצור':(T.remaining<T.total?'▶ המשך':'▶ התחל');
-}
+const T={total:0,remaining:0,running:false,interval:null,step:0};
+function openTimer(secs,step){clearInterval(T.interval);T.running=false;T.total=secs;T.remaining=secs;T.step=step;updateTimerUI();g('timer-overlay').classList.add('show');}
+function closeTimer(){clearInterval(T.interval);T.running=false;g('timer-overlay').classList.remove('show');}
+function toggleTimer(){T.running?pauseTimer():startTimer();}
+function startTimer(){if(T.remaining<=0)T.remaining=T.total;T.running=true;g('btn-timer-toggle').textContent='⏸ עצור';T.interval=setInterval(()=>{T.remaining--;updateTimerUI();if(T.remaining<=0){clearInterval(T.interval);T.running=false;timerDone();}},1000);}
+function pauseTimer(){clearInterval(T.interval);T.running=false;g('btn-timer-toggle').textContent=T.remaining<T.total?'▶ המשך':'▶ התחל';}
+function timerDone(){g('timer-display').textContent='✓ סיום!';g('timer-display').classList.add('urgent');g('btn-timer-toggle').textContent='🔄 שוב';if(navigator.vibrate)navigator.vibrate([400,200,400,200,400]);try{const ctx=new(window.AudioContext||window.webkitAudioContext)();[0,.35,.7].forEach(t=>{const o=ctx.createOscillator(),gn=ctx.createGain();o.connect(gn);gn.connect(ctx.destination);o.frequency.value=880;gn.gain.setValueAtTime(.4,ctx.currentTime+t);gn.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.28);o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.3);});}catch(e){}}
+function updateTimerUI(){const d=g('timer-display'),f=g('timer-fill'),l=g('timer-step-lbl'),b=g('btn-timer-toggle');if(!d)return;d.textContent=fmtTime(T.remaining);d.classList.toggle('urgent',T.remaining<=10&&T.running);if(f)f.style.width=(T.total>0?T.remaining/T.total*100:100)+'%';if(l)l.textContent='⏱ שלב '+T.step;if(b&&T.remaining>0)b.textContent=T.running?'⏸ עצור':(T.remaining<T.total?'▶ המשך':'▶ התחל');}
 
 // ══════════════════════════════════════════════════════════════
-//  IMAGE HELPER
+//  IMAGE
 // ══════════════════════════════════════════════════════════════
-function loadImageFile(file, cb) {
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => cb(ev.target.result);
-  reader.readAsDataURL(file);
+function loadImageFile(file,cb){if(!file)return;const r=new FileReader();r.onload=ev=>cb(ev.target.result);r.readAsDataURL(file);}
+
+// ══════════════════════════════════════════════════════════════
+//  EMOJI PICKER  (uses native OS keyboard emoji panel)
+// ══════════════════════════════════════════════════════════════
+function openEmojiPicker(onPick){
+  const inp=g('emoji-hidden-input');
+  inp.value='';
+  inp.style.pointerEvents='auto';
+  inp.focus();
+  // On mobile, setting inputmode="emoji" triggers the emoji keyboard
+  inp.setAttribute('inputmode','text'); // reset
+  setTimeout(()=>inp.setAttribute('inputmode','none'),10);
+
+  // Listen for input — grab the emoji character(s) typed
+  function onInput(){
+    const v=inp.value.trim();
+    if(v){
+      // Extract first emoji
+      const match=v.match(/\p{Emoji}/u);
+      if(match){onPick(match[0]);inp.value='';inp.style.pointerEvents='none';inp.removeEventListener('input',onInput);}
+    }
+  }
+  inp.addEventListener('input',onInput);
+  // Also show a simple visual prompt since not all browsers support this
+  setTimeout(()=>{inp.style.pointerEvents='none';inp.removeEventListener('input',onInput);},8000);
 }
 
 // ══════════════════════════════════════════════════════════════
 //  FORM
 // ══════════════════════════════════════════════════════════════
-function emptyFd() { return {id:null,title:'',category:S.cats[0]||'עיקריות',description:'',time:'',servings:'',difficulty:'קל',ingredients:[''],steps:[''],tags:'',emoji:'🍽️',image:null,favorite:false}; }
-function openAdd() { removeACDropdown();S.editMode=false;S.fd=emptyFd();S.formStep=1;renderForm();showPage('form');g('form-scroll').scrollTop=0; }
-function openEdit(id) { removeACDropdown();const r=S.recipes.find(x=>x.id===id);if(!r)return;S.editMode=true;S.fd={...r,tags:r.tags.join(', '),ingredients:[...r.ingredients],steps:[...r.steps]};S.formStep=1;renderForm();showPage('form');g('form-scroll').scrollTop=0; }
-
-function renderForm() {
-  g('form-title-mid').textContent = S.editMode?'✏️ עריכת מתכון':'✨ מתכון חדש';
-  g('progress-bars').innerHTML = FORM_STEPS.map((_,i)=>`<div class="progress-bar${S.formStep>i?' done':''}"></div>`).join('');
-  g('progress-labels').innerHTML = FORM_STEPS.map((s,i)=>`<div class="progress-lbl${S.formStep===i+1?' active':''}">${s}</div>`).join('');
-  const body = g('form-body');
+function emptyFd(){return{id:null,title:'',category:S.cats[0]||'עיקריות',description:'',time:'',servings:'',difficulty:'קל',ingredientGroups:[{name:'',items:['']}],steps:[''],tags:'',emoji:'🍽️',image:null,favorite:false};}
+function fdFromRecipe(r){
+  // Convert old flat ingredients to grouped format
+  let groups;
+  if(r.ingredientGroups&&r.ingredientGroups.length) groups=r.ingredientGroups.map(g=>({name:g.name||'',items:[...(g.items||[])]}));
+  else groups=[{name:'',items:[...(r.ingredients||[])]}];
+  return{...r,tags:(r.tags||[]).join(', '),ingredientGroups:groups,steps:[...(r.steps||[])]};
+}
+function openAdd(){removeACDropdown();S.editMode=false;S.fd=emptyFd();S.formStep=1;renderForm();showPage('form');g('form-scroll').scrollTop=0;}
+function openEdit(id){removeACDropdown();const r=S.recipes.find(x=>x.id===id);if(!r)return;S.editMode=true;S.fd=fdFromRecipe(r);S.formStep=1;renderForm();showPage('form');g('form-scroll').scrollTop=0;}
+function renderForm(){
+  g('form-title-mid').textContent=S.editMode?'✏️ עריכת מתכון':'✨ מתכון חדש';
+  g('progress-bars').innerHTML=FORM_STEPS.map((_,i)=>`<div class="progress-bar${S.formStep>i?' done':''}"></div>`).join('');
+  g('progress-labels').innerHTML=FORM_STEPS.map((s,i)=>`<div class="progress-lbl${S.formStep===i+1?' active':''}">${s}</div>`).join('');
   removeACDropdown();
-  if (S.formStep===1) buildStep1(body);
-  else if (S.formStep===2) buildStep2(body);
-  else buildStep3(body);
+  const body=g('form-body');
+  if(S.formStep===1)buildStep1(body);else if(S.formStep===2)buildStep2(body);else buildStep3(body);
   g('form-scroll').scrollTop=0;
 }
 
-// ── STEP 1: Basic info + photo ──────────────────────────────
-function buildStep1(body) {
-  const fd = S.fd;
-  body.innerHTML = `
+// ── STEP 1 ───────────────────────────────────────────────────
+function buildStep1(body){
+  const fd=S.fd;
+  body.innerHTML=`
     <div class="field"><label>אימוג'י מייצג</label>
-      <div class="emoji-grid" id="egrid">${EMOJIS.map(e=>`<button class="emoji-btn${fd.emoji===e?' sel':''}" data-emojival="${e}">${e}</button>`).join('')}</div>
+      <div class="emoji-picker-row">
+        <div class="emoji-current" id="emoji-display">${fd.emoji||'🍽️'}</div>
+        <button class="emoji-keyboard-btn" id="btn-emoji-pick">⌨️ בחר אימוג'י מהמקלדת</button>
+      </div>
     </div>
     <div class="field"><label>תמונת מתכון 📸</label>
       ${fd.image
-        ? `<div class="upload-zone has-img" id="upload-preview-zone"><img class="upload-preview" src="${esc(fd.image)}" alt=""></div>
-           <button class="remove-img-btn" id="btn-rm-img">✕ הסר תמונה</button>`
-        : `<div class="photo-options">
-             <button class="photo-opt-btn" id="btn-photo-gallery">🖼️ בחר מהגלריה</button>
-             <button class="photo-opt-btn" id="btn-photo-camera">📷 צלם עכשיו</button>
-           </div>`
+        ?`<div class="upload-zone has-img"><img class="upload-preview" src="${esc(fd.image)}" alt=""></div><button class="remove-img-btn" id="btn-rm-img">✕ הסר תמונה</button>`
+        :`<div class="photo-options"><button class="photo-opt-btn" id="btn-photo-gallery">🖼️ גלריה</button><button class="photo-opt-btn" id="btn-photo-camera">📷 צלם</button></div>`
       }
     </div>
     <div class="field"><label>שם המתכון *</label><input id="f-title" value="${esc(fd.title)}" placeholder="למשל: עוגת גבינה של סבתא"></div>
@@ -769,14 +973,21 @@ function buildStep1(body) {
     <div class="field"><label>תגיות (מופרדות בפסיק)</label><input id="f-tags" value="${esc(fd.tags)}" placeholder="קיץ, כפרי, מסורתי"></div>
     <button class="btn-gold" id="btn-s1next" ${!fd.title.trim()?'disabled':''}>הבא ←</button>`;
 
-  // Emoji
-  body.querySelectorAll('[data-emojival]').forEach(b=>b.addEventListener('click',()=>{S.fd.emoji=b.dataset.emojival;renderForm();}));
-  // Photo buttons
-  const gal=g('btn-photo-gallery'), cam=g('btn-photo-camera'), rm=g('btn-rm-img');
-  if(gal) gal.addEventListener('click',()=>g('input-gallery').click());
-  if(cam) cam.addEventListener('click',()=>g('input-camera').click());
-  if(rm)  rm.addEventListener('click',()=>{S.fd.image=null;renderForm();});
-  // Inputs
+  // Emoji picker via keyboard
+  g('btn-emoji-pick').addEventListener('click',()=>{
+    openEmojiPicker(emoji=>{
+      S.fd.emoji=emoji;
+      g('emoji-display').textContent=emoji;
+    });
+    // Fallback prompt for desktop
+    const typed=prompt('הדבק אימוג\'י: (במובייל השתמש במקלדת האימוג\'י)','');
+    if(typed){const m=typed.match(/\p{Emoji}/u);if(m){S.fd.emoji=m[0];g('emoji-display').textContent=m[0];}}
+  });
+
+  const gal=g('btn-photo-gallery'),cam=g('btn-photo-camera'),rm=g('btn-rm-img');
+  if(gal)gal.addEventListener('click',()=>g('input-gallery').click());
+  if(cam)cam.addEventListener('click',()=>g('input-camera').click());
+  if(rm)rm.addEventListener('click',()=>{S.fd.image=null;renderForm();});
   g('f-title').addEventListener('input',e=>{S.fd.title=e.target.value;g('btn-s1next').disabled=!e.target.value.trim();});
   g('f-cat').addEventListener('change',e=>S.fd.category=e.target.value);
   g('f-time').addEventListener('input',e=>S.fd.time=e.target.value);
@@ -787,87 +998,98 @@ function buildStep1(body) {
   g('btn-s1next').addEventListener('click',()=>{S.formStep=2;renderForm();});
 }
 
-// ── STEP 2: Ingredients + autocomplete ──────────────────────
-function buildStep2(body) {
-  const fd = S.fd;
+// ── STEP 2: Ingredients with groups ─────────────────────────
+function buildStep2(body){
+  const fd=S.fd;
 
-  function ingHTML() {
-    return fd.ingredients.map((v,i)=>`
-      <div class="dyn-row">
-        <div class="ing-field-wrap">
-          <input class="dyn-input" data-ingidx="${i}" value="${esc(v)}" placeholder="מצרך ${i+1}..." autocomplete="off">
+  function sectionsHTML(){
+    return(fd.ingredientGroups||[]).map((grp,gi)=>`
+      <div class="ing-section" data-gi="${gi}">
+        <div class="ing-section-header">
+          <input class="ing-section-name" data-grpname="${gi}" value="${esc(grp.name)}" placeholder="שם השלב (לדוגמא: לבצק)">
+          ${fd.ingredientGroups.length>1?`<button class="remove-section-btn" data-rmgrp="${gi}">✕ מחק שלב</button>`:''}
         </div>
-        ${fd.ingredients.length>1?`<button class="remove-field-btn" data-rming="${i}">−</button>`:''}
+        <div id="ing-items-${gi}">
+          ${(grp.items||[]).map((v,ii)=>`
+            <div class="dyn-row">
+              <div class="ing-field-wrap">
+                <input class="dyn-input" data-ingidx="${gi}_${ii}" value="${esc(v)}" placeholder="מצרך..." autocomplete="off">
+              </div>
+              ${grp.items.length>1?`<button class="remove-field-btn" data-rming="${gi}_${ii}">−</button>`:''}
+            </div>`).join('')}
+        </div>
+        <button class="add-more-btn" data-adding="${gi}" style="margin-top:5px">+ הוסף מצרך לשלב</button>
       </div>`).join('');
   }
 
-  body.innerHTML = `<div id="ing-wrap">${ingHTML()}</div>
-    <button class="add-more-btn" id="btn-add-ing">+ הוסף מצרך</button>
+  const hasItems=fd.ingredientGroups.some(g=>g.items.some(v=>v.trim()));
+  body.innerHTML=`<div id="grp-wrap">${sectionsHTML()}</div>
+    <button class="add-section-btn" id="btn-add-section">✦ הוסף שלב חדש (לבצק / למילוי / לציפוי...)</button>
     <div class="btn-row">
       <button class="btn-gray" id="btn-s2back">← חזרה</button>
-      <button class="btn-gold" id="btn-s2next" ${!fd.ingredients.some(v=>v.trim())?'disabled':''}>הבא ←</button>
+      <button class="btn-gold" id="btn-s2next" ${!hasItems?'disabled':''}>הבא ←</button>
     </div>`;
 
-  function wireIngs() {
-    body.querySelectorAll('[data-ingidx]').forEach(inp => {
-      inp.addEventListener('input', e => {
-        const idx = +inp.dataset.ingidx;
-        S.fd.ingredients[idx] = e.target.value;
-        g('btn-s2next').disabled = !S.fd.ingredients.some(v=>v.trim());
-        // Autocomplete
-        const suggestions = getACSuggestions(e.target.value);
-        const wrap = inp.closest('.ing-field-wrap');
-        if (suggestions.length && wrap) {
-          showACDropdown(wrap, inp, suggestions, chosen => {
-            S.fd.ingredients[idx] = chosen;
-            inp.value = chosen;
-            g('btn-s2next').disabled = false;
-          });
-        } else { removeACDropdown(); }
+  function wireGroups(){
+    // Group name inputs
+    body.querySelectorAll('[data-grpname]').forEach(inp=>{inp.addEventListener('input',e=>S.fd.ingredientGroups[+inp.dataset.grpname].name=e.target.value);});
+    // Remove group
+    body.querySelectorAll('[data-rmgrp]').forEach(btn=>{btn.addEventListener('click',()=>{removeACDropdown();S.fd.ingredientGroups.splice(+btn.dataset.rmgrp,1);g('grp-wrap').innerHTML=sectionsHTML();wireGroups();});});
+    // Add ingredient to group
+    body.querySelectorAll('[data-adding]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        removeACDropdown();const gi=+btn.dataset.adding;S.fd.ingredientGroups[gi].items.push('');
+        g('grp-wrap').innerHTML=sectionsHTML();wireGroups();
+        setTimeout(()=>{const all=body.querySelectorAll(`[data-ingidx^="${gi}_"]`);if(all.length)all[all.length-1].focus();},30);
       });
-      inp.addEventListener('blur', ()=>setTimeout(removeACDropdown, 150));
     });
+    // Ingredient inputs + autocomplete
+    body.querySelectorAll('[data-ingidx]').forEach(inp=>{
+      inp.addEventListener('input',e=>{
+        const[gi,ii]=inp.dataset.ingidx.split('_').map(Number);
+        S.fd.ingredientGroups[gi].items[ii]=e.target.value;
+        g('btn-s2next').disabled=!S.fd.ingredientGroups.some(gr=>gr.items.some(v=>v.trim()));
+        const sugg=getACSuggestions(e.target.value);
+        const wrap=inp.closest('.ing-field-wrap');
+        if(sugg.length&&wrap)showACDropdown(wrap,inp,sugg,chosen=>{S.fd.ingredientGroups[gi].items[ii]=chosen;inp.value=chosen;g('btn-s2next').disabled=false;});
+        else removeACDropdown();
+      });
+      inp.addEventListener('blur',()=>setTimeout(removeACDropdown,150));
+    });
+    // Remove ingredient
     body.querySelectorAll('[data-rming]').forEach(btn=>{
-      btn.addEventListener('click',()=>{removeACDropdown();S.fd.ingredients.splice(+btn.dataset.rming,1);g('ing-wrap').innerHTML=ingHTML();wireIngs();});
+      btn.addEventListener('click',()=>{
+        removeACDropdown();const[gi,ii]=btn.dataset.rming.split('_').map(Number);
+        S.fd.ingredientGroups[gi].items.splice(ii,1);
+        g('grp-wrap').innerHTML=sectionsHTML();wireGroups();
+      });
     });
   }
-  wireIngs();
-
-  g('btn-add-ing').addEventListener('click',()=>{
-    removeACDropdown();S.fd.ingredients.push('');g('ing-wrap').innerHTML=ingHTML();wireIngs();
-    setTimeout(()=>{const all=body.querySelectorAll('[data-ingidx]');if(all.length)all[all.length-1].focus();},30);
-  });
+  wireGroups();
+  g('btn-add-section').addEventListener('click',()=>{removeACDropdown();S.fd.ingredientGroups.push({name:'',items:['']});g('grp-wrap').innerHTML=sectionsHTML();wireGroups();});
   g('btn-s2back').addEventListener('click',()=>{removeACDropdown();S.formStep=1;renderForm();});
   g('btn-s2next').addEventListener('click',()=>{removeACDropdown();S.formStep=3;renderForm();});
 }
 
-// ── STEP 3: Steps ───────────────────────────────────────────
-function buildStep3(body) {
-  const fd = S.fd;
-  function stpHTML() {
-    return fd.steps.map((v,i)=>`
-      <div style="margin-bottom:12px">
-        <div class="step-label">שלב ${i+1}</div>
-        <div class="dyn-row">
-          <textarea class="dyn-textarea" data-stepidx="${i}" placeholder="תאר את שלב ${i+1}...">${esc(v)}</textarea>
-          ${fd.steps.length>1?`<button class="remove-field-btn" data-rmstep="${i}">−</button>`:''}
-        </div>
-      </div>`).join('');
-  }
-  body.innerHTML = `<div id="stp-wrap">${stpHTML()}</div>
+// ── STEP 3: Steps ────────────────────────────────────────────
+function buildStep3(body){
+  const fd=S.fd;
+  function stpHTML(){return fd.steps.map((v,i)=>`
+    <div style="margin-bottom:11px"><div class="step-label">שלב ${i+1}</div>
+      <div class="dyn-row">
+        <textarea class="dyn-textarea" data-stepidx="${i}" placeholder="תאר את שלב ${i+1}...">${esc(v)}</textarea>
+        ${fd.steps.length>1?`<button class="remove-field-btn" data-rmstep="${i}">−</button>`:''}
+      </div>
+    </div>`).join('');}
+  body.innerHTML=`<div id="stp-wrap">${stpHTML()}</div>
     <button class="add-more-btn" id="btn-add-stp">+ הוסף שלב</button>
     <div class="btn-row">
       <button class="btn-gray" id="btn-s3back">← חזרה</button>
       <button class="btn-gold" id="btn-save" ${!fd.steps.some(v=>v.trim())?'disabled':''}>${S.editMode?'💾 שמור שינויים':'✨ הוסף מתכון'}</button>
     </div>`;
-
-  function wireStps() {
-    body.querySelectorAll('[data-stepidx]').forEach(ta=>{
-      ta.addEventListener('input',e=>{S.fd.steps[+ta.dataset.stepidx]=e.target.value;g('btn-save').disabled=!S.fd.steps.some(v=>v.trim());});
-    });
-    body.querySelectorAll('[data-rmstep]').forEach(btn=>{
-      btn.addEventListener('click',()=>{S.fd.steps.splice(+btn.dataset.rmstep,1);g('stp-wrap').innerHTML=stpHTML();wireStps();});
-    });
+  function wireStps(){
+    body.querySelectorAll('[data-stepidx]').forEach(ta=>{ta.addEventListener('input',e=>{S.fd.steps[+ta.dataset.stepidx]=e.target.value;g('btn-save').disabled=!S.fd.steps.some(v=>v.trim());});});
+    body.querySelectorAll('[data-rmstep]').forEach(btn=>{btn.addEventListener('click',()=>{S.fd.steps.splice(+btn.dataset.rmstep,1);g('stp-wrap').innerHTML=stpHTML();wireStps();});});
   }
   wireStps();
   g('btn-add-stp').addEventListener('click',()=>{S.fd.steps.push('');g('stp-wrap').innerHTML=stpHTML();wireStps();setTimeout(()=>{const all=body.querySelectorAll('[data-stepidx]');if(all.length)all[all.length-1].focus();},30);});
@@ -875,68 +1097,64 @@ function buildStep3(body) {
   g('btn-save').addEventListener('click',saveRecipe);
 }
 
-function saveRecipe() {
+function saveRecipe(){
   const fd=S.fd;
-  const r={...fd,id:S.editMode?fd.id:Date.now(),tags:fd.tags.split(',').map(t=>t.trim()).filter(Boolean),servings:parseInt(fd.servings)||4,ingredients:fd.ingredients.filter(v=>v.trim()),steps:fd.steps.filter(v=>v.trim()),favorite:S.editMode?fd.favorite:false};
+  // Clean groups — remove empty items, keep non-empty groups
+  const groups=fd.ingredientGroups.map(g=>({name:g.name.trim(),items:g.items.filter(v=>v.trim())})).filter(g=>g.items.length);
+  // Also maintain flat ingredients for backward compat
+  const flatIngs=groups.flatMap(g=>g.items);
+  const r={...fd,id:S.editMode?fd.id:Date.now(),tags:fd.tags.split(',').map(t=>t.trim()).filter(Boolean),servings:parseInt(fd.servings)||4,ingredients:flatIngs,ingredientGroups:groups,steps:fd.steps.filter(v=>v.trim()),favorite:S.editMode?fd.favorite:false};
   if(S.editMode){S.recipes=S.recipes.map(x=>x.id===r.id?r:x);saveState();openDetail(r.id);}
   else{S.recipes.unshift(r);saveState();goHome();}
 }
 
 // ══════════════════════════════════════════════════════════════
-//  GLOBAL WIRING  (once at startup, never inline onclick)
+//  GLOBAL WIRING
 // ══════════════════════════════════════════════════════════════
-g('btn-nav-home').addEventListener('click', goHome);
-g('btn-nav-add').addEventListener('click', openAdd);
-g('btn-nav-cats').addEventListener('click', openCatModal);
-g('search-input').addEventListener('input', renderCards);
-g('btn-fav-toggle').addEventListener('click', ()=>{ S.favOnly=!S.favOnly; g('btn-fav-toggle').classList.toggle('on',S.favOnly); renderCards(); });
-
-// Cat bar (delegated — re-rendered)
-g('cat-bar').addEventListener('click', e=>{
+g('btn-nav-home').addEventListener('click',goHome);
+g('btn-nav-add').addEventListener('click',openAdd);
+g('btn-nav-cats').addEventListener('click',openCatModal);
+g('search-input').addEventListener('input',renderCards);
+g('btn-fav-toggle').addEventListener('click',()=>{S.favOnly=!S.favOnly;g('btn-fav-toggle').classList.toggle('on',S.favOnly);renderCards();});
+g('btn-logout').addEventListener('click',doLogout);
+g('cat-bar').addEventListener('click',e=>{
   const pill=e.target.closest('[data-setcat]');
   if(pill){S.activeCat=pill.dataset.setcat;renderCatBar();renderCards();return;}
   if(e.target.closest('[data-opencats]'))openCatModal();
 });
-
-// Cards (delegated)
-g('cards-list').addEventListener('click', e=>{
+g('cards-list').addEventListener('click',e=>{
+  if(e.target.closest('[data-draghandle]'))return;
   const fav=e.target.closest('[data-favid]');
   if(fav){e.stopPropagation();toggleFav(+fav.dataset.favid);return;}
   const card=e.target.closest('[data-openid]');
   if(card)openDetail(+card.dataset.openid);
 });
-
-// Delete modal
-g('btn-del-cancel').addEventListener('click', closeDelModal);
-g('btn-del-confirm').addEventListener('click', confirmDelete);
-g('del-modal').addEventListener('click', e=>{ if(e.target===g('del-modal'))closeDelModal(); });
-
-// Category modal
-g('btn-cat-close').addEventListener('click', closeCatModal);
-g('cat-modal').addEventListener('click', e=>{ if(e.target===g('cat-modal'))closeCatModal(); });
-g('btn-new-cat-add').addEventListener('click', addCategory);
-g('new-cat-inp').addEventListener('keydown', e=>{ if(e.key==='Enter')addCategory(); });
-
-// Timer
-g('btn-timer-close').addEventListener('click', closeTimer);
-g('btn-timer-toggle').addEventListener('click', toggleTimer);
-g('timer-overlay').addEventListener('click', e=>{ if(e.target===g('timer-overlay'))closeTimer(); });
-
-// Form back
-g('btn-form-back').addEventListener('click', ()=>{ removeACDropdown(); if(S.editMode)openDetail(S.fd.id);else goHome(); });
-
-// Image inputs (gallery + camera — both use same handler)
-function handleImageInput(e) {
-  loadImageFile(e.target.files[0], data=>{ S.fd.image=data; renderForm(); });
-  e.target.value='';
-}
-g('input-gallery').addEventListener('change', handleImageInput);
-g('input-camera').addEventListener('change', handleImageInput);
+g('btn-del-cancel').addEventListener('click',closeDelModal);
+g('btn-del-confirm').addEventListener('click',confirmDelete);
+g('del-modal').addEventListener('click',e=>{if(e.target===g('del-modal'))closeDelModal();});
+g('btn-cat-close').addEventListener('click',closeCatModal);
+g('cat-modal').addEventListener('click',e=>{if(e.target===g('cat-modal'))closeCatModal();});
+g('btn-new-cat-add').addEventListener('click',addCategory);
+g('new-cat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')addCategory();});
+g('btn-timer-close').addEventListener('click',closeTimer);
+g('btn-timer-toggle').addEventListener('click',toggleTimer);
+g('timer-overlay').addEventListener('click',e=>{if(e.target===g('timer-overlay'))closeTimer();});
+g('btn-form-back').addEventListener('click',()=>{removeACDropdown();if(S.editMode)openDetail(S.fd.id);else goHome();});
+g('share-whatsapp').addEventListener('click',()=>doShare('whatsapp'));
+g('share-sms').addEventListener('click',()=>doShare('sms'));
+g('share-email').addEventListener('click',()=>doShare('email'));
+g('share-cancel').addEventListener('click',closeShare);
+g('share-sheet').addEventListener('click',e=>{if(e.target===g('share-sheet'))closeShare();});
+function handleImageInput(e){loadImageFile(e.target.files[0],data=>{S.fd.image=data;renderForm();});e.target.value='';}
+g('input-gallery').addEventListener('change',handleImageInput);
+g('input-camera').addEventListener('change',handleImageInput);
 
 // ══════════════════════════════════════════════════════════════
-//  INIT
+//  INIT — auto-login if session exists
 // ══════════════════════════════════════════════════════════════
-renderHome();
+initLogin();
+const sess=getSession();
+if(sess&&getUsers()[sess]){CU=sess;loadUserState();enterApp();}
 </script>
 </body>
 </html>
