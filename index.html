@@ -608,22 +608,15 @@ function fmtTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%6
 function userTitle(){return CU?`ספר המתכונים של ${CU}`:'ספר המתכונים שלי';}
 function userSubtitle(){return CU?`${CU.toUpperCase()}'S RECIPE BOOK`:'MY RECIPE COLLECTION';}
 
-// Wake Lock
-async function requestWakeLock(){
-  if('wakeLock' in navigator){try{_wakeLock=await navigator.wakeLock.request('screen');}catch(e){}}
-}
-function releaseWakeLock(){if(_wakeLock){_wakeLock.release();_wakeLock=null;}}
-
-// Format recipe as plain text for sharing
 function recipeToText(r){
   let t=`✦ ${r.title} ✦\n`;
   t+=`⏱ ${r.time}  |  👥 ${r.servings} מנות  |  📊 ${r.difficulty}\n\n`;
   if(r.description) t+=`${r.description}\n\n`;
   t+='🌿 מצרכים:\n';
   if(r.ingredientGroups&&r.ingredientGroups.length){r.ingredientGroups.forEach(grp=>{if(grp.name)t+=`\n— ${grp.name} —\n`;grp.items.forEach(i=>t+=`• ${i}\n`);});}
-  else{r.ingredients.forEach(i=>t+=`• ${i}\n`);}
+  else{(r.ingredients||[]).forEach(i=>t+=`• ${i}\n`);}
   t+='\n📋 אופן הכנה:\n';
-  r.steps.forEach((s,i)=>t+=`${i+1}. ${s}\n`);
+  (r.steps||[]).forEach((s,i)=>t+=`${i+1}. ${s}\n`);
   t+=`\n— מתוך ${userTitle()} —`;
   return t;
 }
