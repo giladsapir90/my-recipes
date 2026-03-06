@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#3A2210">
-<title>ספר המתכונים שלי</title>
+<title>ספר המתכונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -15,7 +15,7 @@
   --bg:#F4E8CC;--cream:#FFFAF0;--border:#C8A87A;
   --brown:#5C3D1E;--dark:#3A2210;--gold:#8B6914;
   --text:#2C1A0E;--muted:#7A5C3A;--light:#E8D5B0;
-  --red:#8B3A3A;--green:#3D6B45;
+  --red:#8B3A3A;--green:#3D6B45;--blue:#2A5C8B;
   --ff:'Playfair Display',Georgia,serif;
   --fb:'Lora',Georgia,serif;
   --shadow:0 4px 20px rgba(0,0,0,.12);
@@ -289,10 +289,63 @@ body{font-family:var(--fb);}
 .new-cat-add{background:var(--gold);border:none;color:#FFF9EE;border-radius:6px;padding:0 15px;cursor:pointer;font-size:22px;flex-shrink:0;}
 .new-cat-add:active{filter:brightness(.88);}
 
+/* ACT BLUE */
+.act-blue{background:var(--blue);color:#FFF9EE;}
+/* STEP CHECKOFF */
+.step-item{transition:opacity .2s;}
+.step-item.done{opacity:.45;}
+.step-item.done .step-text{text-decoration:line-through;color:var(--muted);}
+.step-num{cursor:pointer;transition:background .2s;}
+.step-item.done .step-num{background:var(--green);}
+/* PERSONAL NOTES */
+.notes-box{background:rgba(139,105,20,.06);border:1.5px dashed var(--gold);border-radius:9px;padding:11px 13px;margin-top:18px;}
+.notes-title{font-family:var(--ff);font-size:12px;color:var(--gold);margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.notes-text{font-size:13px;color:var(--muted);font-style:italic;line-height:1.7;white-space:pre-wrap;}
+.notes-edit-btn{background:transparent;border:none;color:var(--gold);cursor:pointer;font-size:12px;font-family:var(--fb);padding:2px 5px;margin-right:auto;}
+.notes-textarea{width:100%;min-height:80px;padding:8px 10px;background:var(--cream);border:1.5px solid var(--gold);border-radius:6px;font-family:var(--fb);font-size:13px;color:var(--text);direction:rtl;resize:vertical;}
+.notes-textarea:focus{outline:none;}
+.notes-save-btn{background:var(--gold);border:none;color:#FFF9EE;border-radius:5px;padding:6px 14px;cursor:pointer;font-family:var(--fb);font-size:12px;margin-top:6px;}
+/* COOKING MODE */
+.cooking-overlay{position:fixed;inset:0;z-index:600;background:var(--dark);display:none;flex-direction:column;}
+.cooking-overlay.show{display:flex;}
+.cooking-hdr{background:linear-gradient(to bottom,#000,var(--dark));padding:18px 20px 14px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.cooking-close{background:rgba(255,249,238,.12);border:1px solid rgba(255,249,238,.25);color:#FFF9EE;padding:7px 13px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:12px;}
+.cooking-recipe-title{flex:1;font-family:var(--ff);font-size:14px;color:#C4A882;text-align:center;}
+.cooking-prog-bar{height:4px;background:rgba(255,249,238,.1);flex-shrink:0;}
+.cooking-prog-fill{height:100%;background:var(--gold);transition:width .4s ease;}
+.cooking-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px 28px;text-align:center;}
+.cooking-step-lbl{font-size:11px;color:#C4A882;letter-spacing:3px;margin-bottom:16px;font-style:italic;}
+.cooking-step-txt{font-family:var(--ff);font-size:22px;color:#FFF9EE;line-height:1.65;font-weight:700;text-shadow:0 2px 10px rgba(0,0,0,.4);}
+.cooking-timer-btn{margin-top:22px;display:inline-flex;align-items:center;gap:6px;background:rgba(139,105,20,.2);border:1.5px solid var(--gold);color:var(--gold);border-radius:8px;padding:9px 18px;font-size:13px;cursor:pointer;font-family:var(--fb);}
+.cooking-timer-btn:active{background:rgba(139,105,20,.35);}
+.cooking-nav{display:flex;gap:12px;padding:20px 28px 32px;flex-shrink:0;}
+.cooking-nav-btn{flex:1;padding:15px;border-radius:12px;border:none;font-family:var(--ff);font-size:15px;cursor:pointer;font-weight:700;}
+.cooking-nav-btn:active{filter:brightness(.88);}
+.cooking-prev{background:rgba(255,249,238,.1);color:#FFF9EE;border:1px solid rgba(255,249,238,.2)!important;}
+.cooking-next{background:var(--gold);color:#FFF9EE;}
+.cooking-done-btn{width:100%;padding:16px;background:var(--green);border:none;border-radius:12px;color:#FFF9EE;font-family:var(--ff);font-size:16px;cursor:pointer;font-weight:700;}
+/* AI SCAN */
+.scan-btn{width:100%;padding:11px;background:linear-gradient(135deg,#1a3a5c,var(--blue));border:1.5px solid #5A9ACA;border-radius:8px;color:#FFF9EE;font-family:var(--fb);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;}
+.scan-btn:active{filter:brightness(.88);}
+.scan-btn:disabled{opacity:.5;cursor:default;}
+.scan-note{font-size:10px;color:var(--muted);text-align:center;margin-top:4px;font-style:italic;}
+.scan-loading{text-align:center;padding:16px;color:var(--muted);}
+.scan-spinner{font-size:26px;animation:spin 1s linear infinite;display:inline-block;}
+/* DRAG HANDLES IN FORM */
+.dyn-drag-handle{width:22px;display:flex;align-items:center;justify-content:center;color:var(--light);cursor:grab;font-size:14px;flex-shrink:0;touch-action:none;align-self:center;}
+.dyn-drag-handle:active{cursor:grabbing;color:var(--gold);}
+.dyn-row.dragging-row{opacity:.4;}
+.dyn-row.drag-over-row{border-top:2px solid var(--gold);}
+/* BACKUP */
+.backup-row{display:flex;gap:9px;margin-top:11px;}
+.backup-btn{flex:1;padding:10px;background:var(--cream);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;font-family:var(--fb);font-size:12px;color:var(--brown);display:flex;align-items:center;justify-content:center;gap:5px;}
+.backup-btn:active{border-color:var(--gold);background:var(--light);}
+
 @keyframes fadeSlide{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -326,17 +379,18 @@ body{font-family:var(--fb);}
       <button class="hdr-logout" id="btn-logout">יציאה</button>
     </div>
     <div class="hdr-orn">✦ ✦ ✦</div>
-    <div class="hdr-title">ספר המתכונים</div>
-    <div class="hdr-sub">MY RECIPE COLLECTION</div>
+    <div class="hdr-title" id="hdr-title">ספר המתכונים שלי</div>
+    <div class="hdr-sub" id="hdr-sub">MY RECIPE COLLECTION</div>
     <div class="hdr-count" id="hdr-count"></div>
   </div>
   <div class="nav">
     <button class="nav-btn active" id="btn-nav-home">📖 מתכונים</button>
     <button class="nav-btn" id="btn-nav-add">✏️ חדש</button>
     <button class="nav-btn" id="btn-nav-cats">⚙️ קטגוריות</button>
+    <button class="nav-btn" id="btn-nav-backup">💾 גיבוי</button>
   </div>
   <div class="search-bar">
-    <input class="search-input" id="search-input" placeholder="🔍  חיפוש מתכון, תגית...">
+    <input class="search-input" id="search-input" placeholder="🔍  חיפוש מתכון, תגית, מצרך...">
     <button class="fav-toggle" id="btn-fav-toggle">★</button>
   </div>
   <div class="cat-bar" id="cat-bar"></div>
@@ -435,11 +489,47 @@ body{font-family:var(--fb);}
 <!-- Hidden inputs -->
 <input type="file" id="input-gallery" accept="image/*" style="display:none">
 <input type="file" id="input-camera" accept="image/*" capture="environment" style="display:none">
-<!-- Emoji keyboard trigger (hidden, activated programmatically) -->
+<input type="file" id="input-scan" accept="image/*" style="display:none">
+<input type="file" id="import-file-input" accept=".json" style="display:none">
 <input id="emoji-hidden-input" style="position:fixed;opacity:0;pointer-events:none;top:50%;left:50%;width:1px;height:1px;" inputmode="none">
+
+<!-- COOKING MODE -->
+<div class="cooking-overlay" id="cooking-overlay">
+  <div class="cooking-hdr">
+    <button class="cooking-close" id="btn-cooking-close">✕ יציאה</button>
+    <div class="cooking-recipe-title" id="cooking-recipe-title"></div>
+    <div style="width:70px"></div>
+  </div>
+  <div class="cooking-prog-bar"><div class="cooking-prog-fill" id="cooking-prog-fill" style="width:0%"></div></div>
+  <div class="cooking-body">
+    <div class="cooking-step-lbl" id="cooking-step-lbl"></div>
+    <div class="cooking-step-txt" id="cooking-step-txt"></div>
+    <button class="cooking-timer-btn" id="cooking-timer-btn" style="display:none">⏱ הפעל טיימר</button>
+  </div>
+  <div class="cooking-nav" id="cooking-nav"></div>
+</div>
+
+<!-- BACKUP MODAL -->
+<div class="modal-overlay" id="backup-modal">
+  <div class="modal-box" style="max-width:340px">
+    <div class="modal-title">💾 גיבוי ושחזור</div>
+    <div class="modal-text" style="margin-bottom:10px">ייצא את כל המתכונים שלך לקובץ, או ייבא מגיבוי קיים.</div>
+    <div class="backup-row">
+      <button class="backup-btn" id="btn-export-backup">📤 ייצוא JSON</button>
+      <button class="backup-btn" id="btn-import-backup">📥 ייבוא JSON</button>
+    </div>
+    <div style="margin-top:11px;font-size:11px;color:var(--muted);text-align:center;font-style:italic">הגיבוי שומר את כל המתכונים והקטגוריות</div>
+    <button class="btn-gold" id="btn-backup-close" style="margin-top:14px">סגור</button>
+  </div>
+</div>
 
 <script>
 'use strict';
+
+// ══════════════════════════════════════════════════════════════
+//  CONFIG — הכנס כאן את ה-API Key שלך
+// ══════════════════════════════════════════════════════════════
+const CLAUDE_API_KEY = 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
 
 // ══════════════════════════════════════════════════════════════
 //  CONSTANTS
@@ -495,7 +585,8 @@ function clearSession(){ try{localStorage.removeItem(SESSION_KEY);}catch(e){} }
 //  STATE
 // ══════════════════════════════════════════════════════════════
 let CU=''; // current user
-const S={recipes:[],cats:[...DEFAULT_CATS],page:'login',activeCat:'הכל',favOnly:false,detailId:null,detailServings:null,editMode:false,delTargetId:null,editCatIdx:null,formStep:1,fd:null,shareId:null,dragSrcIdx:null};
+const S={recipes:[],cats:[...DEFAULT_CATS],page:'login',activeCat:'הכל',favOnly:false,detailId:null,detailServings:null,editMode:false,delTargetId:null,editCatIdx:null,formStep:1,fd:null,shareId:null,dragSrcIdx:null,cookingStepIdx:0,cookingRecipeId:null};
+let _wakeLock=null;
 
 function loadUserState(){
   const d=getUserData(CU);
@@ -513,23 +604,27 @@ function cColor(c){return CAT_COLORS[c]||'#7C5C2C';}
 function cIcon(c){return CAT_ICONS[c]||'🍽️';}
 function fmtTime(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');}
 
+// Personalized title & subtitle
+function userTitle(){return CU?`ספר המתכונים של ${CU}`:'ספר המתכונים שלי';}
+function userSubtitle(){return CU?`${CU.toUpperCase()}'S RECIPE BOOK`:'MY RECIPE COLLECTION';}
+
+// Wake Lock
+async function requestWakeLock(){
+  if('wakeLock' in navigator){try{_wakeLock=await navigator.wakeLock.request('screen');}catch(e){}}
+}
+function releaseWakeLock(){if(_wakeLock){_wakeLock.release();_wakeLock=null;}}
+
 // Format recipe as plain text for sharing
 function recipeToText(r){
   let t=`✦ ${r.title} ✦\n`;
   t+=`⏱ ${r.time}  |  👥 ${r.servings} מנות  |  📊 ${r.difficulty}\n\n`;
   if(r.description) t+=`${r.description}\n\n`;
   t+='🌿 מצרכים:\n';
-  if(r.ingredientGroups&&r.ingredientGroups.length){
-    r.ingredientGroups.forEach(grp=>{
-      if(grp.name) t+=`\n— ${grp.name} —\n`;
-      grp.items.forEach(i=>t+=`• ${i}\n`);
-    });
-  } else {
-    r.ingredients.forEach(i=>t+=`• ${i}\n`);
-  }
+  if(r.ingredientGroups&&r.ingredientGroups.length){r.ingredientGroups.forEach(grp=>{if(grp.name)t+=`\n— ${grp.name} —\n`;grp.items.forEach(i=>t+=`• ${i}\n`);});}
+  else{r.ingredients.forEach(i=>t+=`• ${i}\n`);}
   t+='\n📋 אופן הכנה:\n';
   r.steps.forEach((s,i)=>t+=`${i+1}. ${s}\n`);
-  t+='\n— נשלח מספר המתכונים שלי —';
+  t+=`\n— מתוך ${userTitle()} —`;
   return t;
 }
 
@@ -569,10 +664,14 @@ function doLogin(){
 }
 function enterApp(){
   g('hdr-username').textContent='שלום, '+CU+' 👋';
+  g('hdr-title').textContent=userTitle();
+  g('hdr-sub').textContent=userSubtitle();
+  document.title=userTitle();
   showPage('home');
   renderHome();
 }
 function doLogout(){
+  releaseWakeLock();
   clearSession();
   CU='';
   S.recipes=[];
@@ -656,7 +755,7 @@ function renderCards(){
   const list=S.recipes.filter(r=>{
     if(S.favOnly&&!r.favorite)return false;
     if(S.activeCat!=='הכל'&&r.category!==S.activeCat)return false;
-    if(q)return r.title.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q));
+    if(q){const ings=[...(r.ingredients||[]),...(r.ingredientGroups||[]).flatMap(g=>g.items||[])];return r.title.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q))||ings.some(i=>i.toLowerCase().includes(q));}
     return true;
   });
   g('filter-count').textContent=list.length+' מתכונים'+(S.favOnly?' מועדפים':'')+(S.activeCat!=='הכל'?' ב'+S.activeCat:'');
@@ -761,12 +860,14 @@ function renderDetail(){
     <div class="detail-badges"><span class="badge">⏱ ${esc(r.time)}</span><span class="badge">📊 ${esc(r.difficulty)}</span></div>
     <div class="detail-actions">
       <button class="act-btn act-fav${r.favorite?' on':''}" id="btn-det-fav">${r.favorite?'★ מועדף':'☆ מועדף'}</button>
+      <button class="act-btn act-blue" id="btn-det-cook">👨‍🍳 בישול</button>
       <button class="act-btn act-gold" id="btn-det-edit">✏️ עריכה</button>
       <button class="act-btn act-green" id="btn-det-share">📤 שיתוף</button>
       <button class="act-btn act-red" id="btn-det-del">🗑 מחיקה</button>
     </div>`;
   g('btn-det-back').addEventListener('click',goHome);
   g('btn-det-fav').addEventListener('click',()=>toggleFav(r.id));
+  g('btn-det-cook').addEventListener('click',()=>openCookingMode(r.id));
   g('btn-det-edit').addEventListener('click',()=>openEdit(r.id));
   g('btn-det-share').addEventListener('click',()=>openShare(r.id));
   g('btn-det-del').addEventListener('click',()=>openDelModal(r.id));
@@ -802,8 +903,14 @@ function renderDetail(){
   const steps=(r.steps||[]).map((s,i)=>{
     const secs=stepSecs(s);
     const tb=secs?`<br><button class="timer-btn" data-tsecs="${secs}" data-tstep="${i+1}">⏱ הפעל טיימר · ${fmtTime(secs)}</button>`:'';
-    return`<div class="step-item"><div class="step-num">${i+1}</div><div class="step-text">${esc(s)}${tb}</div></div>`;
+    return`<div class="step-item" id="step-${i}"><div class="step-num" data-checkstep="${i}">${i+1}</div><div class="step-text">${esc(s)}${tb}</div></div>`;
   }).join('');
+
+  const notes=r.notes||'';
+  const notesHTML=`<div class="notes-box" id="notes-box">
+    <div class="notes-title">🗒️ הערות אישיות שלי<button class="notes-edit-btn" id="btn-notes-edit">✏️ ערוך</button></div>
+    <div class="notes-text" id="notes-display">${notes?esc(notes):'<span style="opacity:.5">לחץ ערוך להוספת הערה אישית...</span>'}</div>
+  </div>`;
 
   g('detail-body').innerHTML=`<div class="detail-body-inner">
     <p class="detail-quote">${esc(r.description)}</p>
@@ -816,14 +923,33 @@ function renderDetail(){
       <button class="srv-btn" id="btn-srv-plus">+</button>
     </div>
     <div style="margin-bottom:18px">${ingsHTML}</div>
-    <div class="section-title"><span>📋</span> אופן הכנה</div>
+    <div class="section-title"><span>📋</span> אופן הכנה <span style="font-size:11px;font-weight:400;color:var(--muted);font-family:var(--fb)">(לחץ על מספר לסימון ✓)</span></div>
     ${steps}
+    ${notesHTML}
     <div class="detail-footer">✦ ✦ ✦</div>
   </div>`;
 
   g('btn-srv-minus').addEventListener('click',()=>changeServings(-1));
   g('btn-srv-plus').addEventListener('click',()=>changeServings(1));
   g('detail-body').querySelectorAll('.timer-btn').forEach(btn=>{btn.addEventListener('click',()=>openTimer(+btn.dataset.tsecs,+btn.dataset.tstep));});
+  // Step checkoff
+  g('detail-body').querySelectorAll('[data-checkstep]').forEach(btn=>{
+    btn.addEventListener('click',()=>g('step-'+btn.dataset.checkstep).classList.toggle('done'));
+  });
+  // Personal notes
+  g('btn-notes-edit').addEventListener('click',()=>{
+    const cur=S.recipes.find(x=>x.id===S.detailId);
+    g('notes-box').innerHTML=`
+      <div class="notes-title">🗒️ הערות אישיות שלי</div>
+      <textarea class="notes-textarea" id="notes-ta" placeholder="הפעם הבאה אנסה... / שינויים שעשיתי...">${esc(cur.notes||'')}</textarea>
+      <button class="notes-save-btn" id="btn-notes-save">💾 שמור</button>`;
+    g('btn-notes-save').addEventListener('click',()=>{
+      const val=g('notes-ta').value;
+      S.recipes=S.recipes.map(rx=>rx.id===S.detailId?{...rx,notes:val}:rx);
+      saveState();
+      const sy=g('detail-scroll').scrollTop;renderDetail();g('detail-scroll').scrollTop=sy;
+    });
+  });
 }
 function changeServings(d){
   const r=S.recipes.find(x=>x.id===S.detailId);if(!r)return;
@@ -962,6 +1088,12 @@ function buildStep1(body){
         :`<div class="photo-options"><button class="photo-opt-btn" id="btn-photo-gallery">🖼️ גלריה</button><button class="photo-opt-btn" id="btn-photo-camera">📷 צלם</button></div>`
       }
     </div>
+    <div class="field">
+      <label>🤖 סריקת מתכון חכמה</label>
+      <button class="scan-btn" id="btn-scan-recipe">📸 סרוק מתכון מתמונה</button>
+      <div class="scan-note">✦ שירות בתשלום מינימלי · ~₪0.015 לסריקה ✦</div>
+      <div id="scan-status"></div>
+    </div>
     <div class="field"><label>שם המתכון *</label><input id="f-title" value="${esc(fd.title)}" placeholder="למשל: עוגת גבינה של סבתא"></div>
     <div class="field"><label>קטגוריה</label><select id="f-cat">${S.cats.map(c=>`<option value="${esc(c)}"${fd.category===c?' selected':''}>${esc(c)}</option>`).join('')}</select></div>
     <div class="row2">
@@ -988,6 +1120,8 @@ function buildStep1(body){
   if(gal)gal.addEventListener('click',()=>g('input-gallery').click());
   if(cam)cam.addEventListener('click',()=>g('input-camera').click());
   if(rm)rm.addEventListener('click',()=>{S.fd.image=null;renderForm();});
+  const scanBtn=g('btn-scan-recipe');
+  if(scanBtn)scanBtn.addEventListener('click',()=>g('input-scan').click());
   g('f-title').addEventListener('input',e=>{S.fd.title=e.target.value;g('btn-s1next').disabled=!e.target.value.trim();});
   g('f-cat').addEventListener('change',e=>S.fd.category=e.target.value);
   g('f-time').addEventListener('input',e=>S.fd.time=e.target.value);
@@ -1011,7 +1145,8 @@ function buildStep2(body){
         </div>
         <div id="ing-items-${gi}">
           ${(grp.items||[]).map((v,ii)=>`
-            <div class="dyn-row">
+            <div class="dyn-row" data-ingrow="${gi}_${ii}" draggable="true">
+              <div class="dyn-drag-handle" data-ingdrag="${gi}_${ii}">⠿</div>
               <div class="ing-field-wrap">
                 <input class="dyn-input" data-ingidx="${gi}_${ii}" value="${esc(v)}" placeholder="מצרך..." autocomplete="off">
               </div>
@@ -1064,6 +1199,14 @@ function buildStep2(body){
         g('grp-wrap').innerHTML=sectionsHTML();wireGroups();
       });
     });
+    // Drag reorder ingredients within group
+    let ingDragSrc=null,ingDragGrp=null;
+    body.querySelectorAll('[data-ingrow]').forEach(row=>{
+      row.addEventListener('dragstart',e=>{const[gi,ii]=row.dataset.ingrow.split('_').map(Number);ingDragSrc=ii;ingDragGrp=gi;row.classList.add('dragging-row');e.dataTransfer.effectAllowed='move';});
+      row.addEventListener('dragend',()=>row.classList.remove('dragging-row'));
+      row.addEventListener('dragover',e=>{e.preventDefault();body.querySelectorAll('[data-ingrow]').forEach(r=>r.classList.remove('drag-over-row'));row.classList.add('drag-over-row');});
+      row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over-row');const[tgi,tii]=row.dataset.ingrow.split('_').map(Number);if(ingDragGrp!==tgi||ingDragSrc===tii)return;const items=S.fd.ingredientGroups[ingDragGrp].items;const[m]=items.splice(ingDragSrc,1);items.splice(tii,0,m);g('grp-wrap').innerHTML=sectionsHTML();wireGroups();});
+    });
   }
   wireGroups();
   g('btn-add-section').addEventListener('click',()=>{removeACDropdown();S.fd.ingredientGroups.push({name:'',items:['']});g('grp-wrap').innerHTML=sectionsHTML();wireGroups();});
@@ -1075,7 +1218,10 @@ function buildStep2(body){
 function buildStep3(body){
   const fd=S.fd;
   function stpHTML(){return fd.steps.map((v,i)=>`
-    <div style="margin-bottom:11px"><div class="step-label">שלב ${i+1}</div>
+    <div style="margin-bottom:11px" data-steprow="${i}" draggable="true">
+      <div class="step-label" style="display:flex;align-items:center;gap:6px">
+        <span style="color:var(--light);cursor:grab;font-size:13px">⠿</span> שלב ${i+1}
+      </div>
       <div class="dyn-row">
         <textarea class="dyn-textarea" data-stepidx="${i}" placeholder="תאר את שלב ${i+1}...">${esc(v)}</textarea>
         ${fd.steps.length>1?`<button class="remove-field-btn" data-rmstep="${i}">−</button>`:''}
@@ -1087,9 +1233,16 @@ function buildStep3(body){
       <button class="btn-gray" id="btn-s3back">← חזרה</button>
       <button class="btn-gold" id="btn-save" ${!fd.steps.some(v=>v.trim())?'disabled':''}>${S.editMode?'💾 שמור שינויים':'✨ הוסף מתכון'}</button>
     </div>`;
+  let stepDragSrc=null;
   function wireStps(){
     body.querySelectorAll('[data-stepidx]').forEach(ta=>{ta.addEventListener('input',e=>{S.fd.steps[+ta.dataset.stepidx]=e.target.value;g('btn-save').disabled=!S.fd.steps.some(v=>v.trim());});});
     body.querySelectorAll('[data-rmstep]').forEach(btn=>{btn.addEventListener('click',()=>{S.fd.steps.splice(+btn.dataset.rmstep,1);g('stp-wrap').innerHTML=stpHTML();wireStps();});});
+    body.querySelectorAll('[data-steprow]').forEach(row=>{
+      row.addEventListener('dragstart',e=>{stepDragSrc=+row.dataset.steprow;row.classList.add('dragging-row');e.dataTransfer.effectAllowed='move';});
+      row.addEventListener('dragend',()=>row.classList.remove('dragging-row'));
+      row.addEventListener('dragover',e=>{e.preventDefault();body.querySelectorAll('[data-steprow]').forEach(r=>r.classList.remove('drag-over-row'));row.classList.add('drag-over-row');});
+      row.addEventListener('drop',e=>{e.preventDefault();row.classList.remove('drag-over-row');const ti=+row.dataset.steprow;if(stepDragSrc===ti)return;const[m]=S.fd.steps.splice(stepDragSrc,1);S.fd.steps.splice(ti,0,m);g('stp-wrap').innerHTML=stpHTML();wireStps();});
+    });
   }
   wireStps();
   g('btn-add-stp').addEventListener('click',()=>{S.fd.steps.push('');g('stp-wrap').innerHTML=stpHTML();wireStps();setTimeout(()=>{const all=body.querySelectorAll('[data-stepidx]');if(all.length)all[all.length-1].focus();},30);});
@@ -1109,11 +1262,108 @@ function saveRecipe(){
 }
 
 // ══════════════════════════════════════════════════════════════
+//  COOKING MODE  (fullscreen + wake lock)
+// ══════════════════════════════════════════════════════════════
+function openCookingMode(id){
+  const r=S.recipes.find(x=>x.id===id);if(!r||!r.steps||!r.steps.length)return;
+  S.cookingRecipeId=id;S.cookingStepIdx=0;
+  g('cooking-recipe-title').textContent=r.title;
+  g('cooking-overlay').classList.add('show');
+  renderCookingStep();
+  requestWakeLock();
+}
+function closeCookingMode(){g('cooking-overlay').classList.remove('show');releaseWakeLock();}
+async function requestWakeLock(){if('wakeLock' in navigator){try{_wakeLock=await navigator.wakeLock.request('screen');}catch(e){}}}
+function releaseWakeLock(){if(_wakeLock){_wakeLock.release();_wakeLock=null;}}
+function renderCookingStep(){
+  const r=S.recipes.find(x=>x.id===S.cookingRecipeId);if(!r)return;
+  const steps=r.steps||[],i=S.cookingStepIdx,total=steps.length;
+  g('cooking-prog-fill').style.width=((i+1)/total*100)+'%';
+  g('cooking-step-lbl').textContent=`שלב ${i+1} מתוך ${total}`;
+  g('cooking-step-txt').textContent=steps[i];
+  function stepSecs(txt){const m=txt.match(/(\d+)\s*(דקות?|שעות?|שעה|שניות?)/);if(!m)return 0;if(m[2].startsWith('שעה')||m[2].startsWith('שעות'))return+m[1]*3600;if(m[2].startsWith('שניות'))return+m[1];return+m[1]*60;}
+  const secs=stepSecs(steps[i]);
+  const tb=g('cooking-timer-btn');
+  if(secs){tb.style.display='inline-flex';tb.textContent='⏱ הפעל טיימר · '+fmtTime(secs);tb.onclick=()=>openTimer(secs,i+1);}
+  else tb.style.display='none';
+  const nav=g('cooking-nav');
+  if(i===total-1){
+    nav.innerHTML='<button class="cooking-nav-btn cooking-prev" id="cp-prev" disabled style="opacity:.35">← הקודם</button><button class="cooking-done-btn" id="cp-done">✓ סיימתי לבשל!</button>';
+    g('cp-done').addEventListener('click',closeCookingMode);
+  } else {
+    nav.innerHTML=`<button class="cooking-nav-btn cooking-prev" id="cp-prev"${i===0?' disabled style="opacity:.35"':''}>← הקודם</button><button class="cooking-nav-btn cooking-next" id="cp-next">הבא ←</button>`;
+    g('cp-next').addEventListener('click',()=>{S.cookingStepIdx++;renderCookingStep();});
+  }
+  const prev=g('cp-prev');if(prev)prev.addEventListener('click',()=>{if(S.cookingStepIdx>0){S.cookingStepIdx--;renderCookingStep();}});
+}
+
+// ══════════════════════════════════════════════════════════════
+//  BACKUP & RESTORE
+// ══════════════════════════════════════════════════════════════
+function openBackupModal(){g('backup-modal').classList.add('show');}
+function closeBackupModal(){g('backup-modal').classList.remove('show');}
+function exportBackup(){
+  const data={version:1,user:CU,exportedAt:new Date().toISOString(),recipes:S.recipes,cats:S.cats};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`מתכונים_${CU}_${new Date().toLocaleDateString('he-IL').replace(/\//g,'-')}.json`;a.click();
+  URL.revokeObjectURL(url);
+}
+function importBackup(file){
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      if(!data.recipes)throw new Error();
+      if(confirm(`לייבא ${data.recipes.length} מתכונים? הפעולה תחליף את המתכונים הנוכחיים.`)){
+        S.recipes=data.recipes;if(data.cats)S.cats=data.cats;
+        saveState();closeBackupModal();goHome();
+      }
+    }catch(err){alert('שגיאה בקריאת הקובץ');}
+  };
+  reader.readAsText(file);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  AI SCAN
+// ══════════════════════════════════════════════════════════════
+async function scanRecipeFromImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=async ev=>{
+      const base64=ev.target.result.split(',')[1];
+      const mediaType=file.type||'image/jpeg';
+      try{
+        const res=await fetch('https://api.anthropic.com/v1/messages',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+          body:JSON.stringify({
+            model:'claude-sonnet-4-20250514',max_tokens:2000,
+            messages:[{role:'user',content:[
+              {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+              {type:'text',text:`חלץ את המתכון מהתמונה והחזר JSON בלבד (ללא markdown) בפורמט:
+{"title":"","description":"","time":"","servings":4,"difficulty":"קל","tags":[],"ingredientGroups":[{"name":"","items":[]}],"steps":[]}
+difficulty חייב להיות: קל, בינוני, או מורכב. החזר JSON בלבד.`}
+            ]}]
+          })
+        });
+        if(!res.ok){reject(new Error(await res.text()));return;}
+        const data=await res.json();
+        resolve(JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim()));
+      }catch(err){reject(err);}
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════
 //  GLOBAL WIRING
 // ══════════════════════════════════════════════════════════════
 g('btn-nav-home').addEventListener('click',goHome);
 g('btn-nav-add').addEventListener('click',openAdd);
 g('btn-nav-cats').addEventListener('click',openCatModal);
+g('btn-nav-backup').addEventListener('click',openBackupModal);
 g('search-input').addEventListener('input',renderCards);
 g('btn-fav-toggle').addEventListener('click',()=>{S.favOnly=!S.favOnly;g('btn-fav-toggle').classList.toggle('on',S.favOnly);renderCards();});
 g('btn-logout').addEventListener('click',doLogout);
@@ -1139,15 +1389,46 @@ g('new-cat-inp').addEventListener('keydown',e=>{if(e.key==='Enter')addCategory()
 g('btn-timer-close').addEventListener('click',closeTimer);
 g('btn-timer-toggle').addEventListener('click',toggleTimer);
 g('timer-overlay').addEventListener('click',e=>{if(e.target===g('timer-overlay'))closeTimer();});
+g('btn-cooking-close').addEventListener('click',closeCookingMode);
 g('btn-form-back').addEventListener('click',()=>{removeACDropdown();if(S.editMode)openDetail(S.fd.id);else goHome();});
 g('share-whatsapp').addEventListener('click',()=>doShare('whatsapp'));
 g('share-sms').addEventListener('click',()=>doShare('sms'));
 g('share-email').addEventListener('click',()=>doShare('email'));
 g('share-cancel').addEventListener('click',closeShare);
 g('share-sheet').addEventListener('click',e=>{if(e.target===g('share-sheet'))closeShare();});
+g('btn-backup-close').addEventListener('click',closeBackupModal);
+g('backup-modal').addEventListener('click',e=>{if(e.target===g('backup-modal'))closeBackupModal();});
+g('btn-export-backup').addEventListener('click',exportBackup);
+g('btn-import-backup').addEventListener('click',()=>g('import-file-input').click());
+g('import-file-input').addEventListener('change',e=>{importBackup(e.target.files[0]);e.target.value='';});
 function handleImageInput(e){loadImageFile(e.target.files[0],data=>{S.fd.image=data;renderForm();});e.target.value='';}
 g('input-gallery').addEventListener('change',handleImageInput);
 g('input-camera').addEventListener('change',handleImageInput);
+// AI Scan
+g('input-scan').addEventListener('change',async e=>{
+  const file=e.target.files[0];e.target.value='';if(!file)return;
+  if(CLAUDE_API_KEY==='YOUR_API_KEY_HERE'){alert('נא להגדיר את ה-API Key בקובץ');return;}
+  const status=g('scan-status');if(!status)return;
+  status.innerHTML='<div class="scan-loading"><span class="scan-spinner">🤖</span> מנתח את המתכון...</div>';
+  g('btn-scan-recipe').disabled=true;
+  try{
+    const result=await scanRecipeFromImage(file);
+    S.fd.title=result.title||'';
+    S.fd.description=result.description||'';
+    S.fd.time=result.time||'';
+    S.fd.servings=result.servings||4;
+    S.fd.difficulty=['קל','בינוני','מורכב'].includes(result.difficulty)?result.difficulty:'קל';
+    S.fd.tags=Array.isArray(result.tags)?result.tags.join(', '):'';
+    if(result.ingredientGroups&&result.ingredientGroups.length)S.fd.ingredientGroups=result.ingredientGroups.map(g=>({name:g.name||'',items:g.items||[]}));
+    else if(result.ingredients)S.fd.ingredientGroups=[{name:'',items:result.ingredients}];
+    S.fd.steps=result.steps||[];
+    status.innerHTML='<div style="color:var(--green);font-size:12px;text-align:center;padding:8px">✓ המתכון זוהה בהצלחה!</div>';
+    setTimeout(()=>{renderForm();},700);
+  }catch(err){
+    status.innerHTML='<div style="color:var(--red);font-size:12px;text-align:center;padding:8px">שגיאה בסריקה. נסה תמונה ברורה יותר.</div>';
+    g('btn-scan-recipe').disabled=false;
+  }
+});
 
 // ══════════════════════════════════════════════════════════════
 //  INIT — auto-login if session exists
