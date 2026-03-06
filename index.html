@@ -490,6 +490,7 @@ body{font-family:var(--fb);}
 <input type="file" id="input-gallery" accept="image/*" style="display:none">
 <input type="file" id="input-camera" accept="image/*" capture="environment" style="display:none">
 <input type="file" id="input-scan" accept="image/*" style="display:none">
+<input type="file" id="input-scan-camera" accept="image/*" capture="environment" style="display:none">
 <input type="file" id="import-file-input" accept=".json" style="display:none">
 <input id="emoji-hidden-input" style="position:fixed;opacity:0;pointer-events:none;top:50%;left:50%;width:1px;height:1px;" inputmode="none">
 
@@ -529,7 +530,7 @@ body{font-family:var(--fb);}
 // ══════════════════════════════════════════════════════════════
 //  CONFIG — הכנס כאן את ה-API Key שלך
 // ══════════════════════════════════════════════════════════════
-const CLAUDE_API_KEY = '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'
+const CLAUDE_API_KEY = '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';
 
 // ══════════════════════════════════════════════════════════════
 //  CONSTANTS
@@ -1083,7 +1084,10 @@ function buildStep1(body){
     </div>
     <div class="field">
       <label>🤖 סריקת מתכון חכמה</label>
-      <button class="scan-btn" id="btn-scan-recipe">📸 סרוק מתכון מתמונה</button>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="scan-btn" id="btn-scan-recipe" style="flex:1">📁 העלה תמונה</button>
+        <button class="scan-btn" id="btn-scan-camera" style="flex:1">📷 צלם עכשיו</button>
+      </div>
       <div class="scan-note">✦ שירות בתשלום מינימלי · ~₪0.015 לסריקה ✦</div>
       <div id="scan-status"></div>
     </div>
@@ -1115,6 +1119,8 @@ function buildStep1(body){
   if(rm)rm.addEventListener('click',()=>{S.fd.image=null;renderForm();});
   const scanBtn=g('btn-scan-recipe');
   if(scanBtn)scanBtn.addEventListener('click',()=>g('input-scan').click());
+  const scanCamBtn=g('btn-scan-camera');
+  if(scanCamBtn)scanCamBtn.addEventListener('click',()=>g('input-scan-camera').click());
   g('f-title').addEventListener('input',e=>{S.fd.title=e.target.value;g('btn-s1next').disabled=!e.target.value.trim();});
   g('f-cat').addEventListener('change',e=>S.fd.category=e.target.value);
   g('f-time').addEventListener('input',e=>S.fd.time=e.target.value);
@@ -1398,12 +1404,15 @@ function handleImageInput(e){loadImageFile(e.target.files[0],data=>{S.fd.image=d
 g('input-gallery').addEventListener('change',handleImageInput);
 g('input-camera').addEventListener('change',handleImageInput);
 // AI Scan
-g('input-scan').addEventListener('change',async e=>{
-  const file=e.target.files[0];e.target.value='';if(!file)return;
+g('input-scan').addEventListener('change',async e=>{handleScanFile(e.target.files[0]);e.target.value='';});
+g('input-scan-camera').addEventListener('change',async e=>{handleScanFile(e.target.files[0]);e.target.value='';});
+async function handleScanFile(file){
+  if(!file)return;
   if(CLAUDE_API_KEY==='YOUR_API_KEY_HERE'){alert('נא להגדיר את ה-API Key בקובץ');return;}
   const status=g('scan-status');if(!status)return;
   status.innerHTML='<div class="scan-loading"><span class="scan-spinner">🤖</span> מנתח את המתכון...</div>';
-  g('btn-scan-recipe').disabled=true;
+  const sb=g('btn-scan-recipe'),sc=g('btn-scan-camera');
+  if(sb)sb.disabled=true;if(sc)sc.disabled=true;
   try{
     const result=await scanRecipeFromImage(file);
     S.fd.title=result.title||'';
@@ -1419,9 +1428,9 @@ g('input-scan').addEventListener('change',async e=>{
     setTimeout(()=>{renderForm();},700);
   }catch(err){
     status.innerHTML='<div style="color:var(--red);font-size:12px;text-align:center;padding:8px">שגיאה בסריקה. נסה תמונה ברורה יותר.</div>';
-    g('btn-scan-recipe').disabled=false;
+    if(sb)sb.disabled=false;if(sc)sc.disabled=false;
   }
-});
+}
 
 // ══════════════════════════════════════════════════════════════
 //  INIT — auto-login if session exists
