@@ -530,7 +530,7 @@ body{font-family:var(--fb);}
 // ══════════════════════════════════════════════════════════════
 //  CONFIG — הכנס כאן את ה-API Key שלך
 // ══════════════════════════════════════════════════════════════
-const CLAUDE_API_KEY = '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';
+const CLAUDE_API_KEY = 'stored-in-cloudflare';
 
 // ══════════════════════════════════════════════════════════════
 //  CONSTANTS
@@ -1336,7 +1336,7 @@ async function scanRecipeFromImage(file){
       try{
         const res=await fetch('https://reciep-proxy.giladsapir90.workers.dev/',{
           method:'POST',
-          headers:{'Content-Type':'application/json','x-api-key':CLAUDE_API_KEY,'anthropic-version':'2023-06-01'},
+          headers:{'Content-Type':'application/json'},
           body:JSON.stringify({
             model:'claude-sonnet-4-20250514',max_tokens:2000,
             messages:[{role:'user',content:[
@@ -1410,7 +1410,6 @@ g('input-scan').addEventListener('change',async e=>{handleScanFile(e.target.file
 g('input-scan-camera').addEventListener('change',async e=>{handleScanFile(e.target.files[0]);e.target.value='';});
 async function handleScanFile(file){
   if(!file)return;
-  if(CLAUDE_API_KEY==='YOUR_API_KEY_HERE'){alert('נא להגדיר את ה-API Key בקובץ');return;}
   const status=g('scan-status');if(!status)return;
   status.innerHTML='<div class="scan-loading"><span class="scan-spinner">🤖</span> מנתח את המתכון...</div>';
   const sb=g('btn-scan-recipe'),sc=g('btn-scan-camera');
