@@ -1349,8 +1349,9 @@ difficulty חייב להיות: קל, בינוני, או מורכב. החזר JS
         });
         if(!res.ok){const errTxt=await res.text();console.error('API error:',res.status,errTxt);reject(new Error('API '+res.status+': '+errTxt));return;}
         const data=await res.json();
-        console.log('API response:',data);
-        resolve(JSON.parse(data.content.map(c=>c.text||'').join('').replace(/```json|```/g,'').trim()));
+        console.log('API response:', JSON.stringify(data));
+        const text=data.content?data.content.map(c=>c.text||'').join(''):JSON.stringify(data);
+        resolve(JSON.parse(text.replace(/```json|```/g,'').trim()));
       }catch(err){reject(err);}
     };
     reader.readAsDataURL(file);
