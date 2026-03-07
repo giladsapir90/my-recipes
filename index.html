@@ -1427,7 +1427,7 @@ async function handleScanFile(file){
     else if(result.ingredients)S.fd.ingredientGroups=[{name:'',items:result.ingredients}];
     S.fd.steps=result.steps||[];
     status.innerHTML='<div style="color:var(--green);font-size:12px;text-align:center;padding:8px">✓ המתכון זוהה בהצלחה!</div>';
-    setTimeout(()=>{renderForm();},700);
+    setTimeout(()=>{S.formStep=1;renderForm();showPage('form');g('form-scroll').scrollTop=0;},700);
   }catch(err){
     console.error('Scan error:', err);
     status.innerHTML='<div style="color:var(--red);font-size:12px;text-align:center;padding:8px">שגיאה: '+esc(err.message)+'</div>';
