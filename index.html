@@ -1355,7 +1355,10 @@ function importBackup(file){
       if(!data.recipes)throw new Error();
       if(confirm(`לייבא ${data.recipes.length} מתכונים? הפעולה תחליף את המתכונים הנוכחיים.`)){
         S.recipes=data.recipes;if(data.cats)S.cats=data.cats;
-        saveState().then(()=>{closeBackupModal();goHome();alert('המתכונים יובאו בהצלחה ונשמרו!');});
+        if(!_fbUid){alert('שגיאה: לא מחובר. נסה להתנתק ולהתחבר מחדש.');return;}
+        saveState()
+          .then(()=>{closeBackupModal();goHome();alert('✓ '+data.recipes.length+' מתכונים יובאו ונשמרו בענן!');})
+          .catch(err=>{alert('שגיאה בשמירה: '+err.message);});
       }
     }catch(err){alert('שגיאה בקריאת הקובץ');}
   };
