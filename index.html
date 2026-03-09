@@ -633,7 +633,9 @@ let _fbUid = null;
 async function loadUserState(){
   const data = await window._fbLoadData(_fbUid);
   if(data){
-    S.recipes = data.recipes || [];
+    // Support both old format (recipes array) and new format (recipesJson string)
+    if(data.recipesJson) S.recipes = JSON.parse(data.recipesJson);
+    else S.recipes = data.recipes || [];
     S.cats = data.cats || [...DEFAULT_CATS];
   } else {
     S.recipes = [];
@@ -643,7 +645,11 @@ async function loadUserState(){
 
 async function saveState(){
   if(!_fbUid) return;
-  await window._fbSaveData(_fbUid, {recipes:S.recipes, cats:S.cats});
+  // Firestore doesn't support nested arrays — store as JSON string
+  await window._fbSaveData(_fbUid, {
+    recipesJson: JSON.stringify(S.recipes),
+    cats: S.cats
+  });
 }
 
 // ══════════════════════════════════════════════════════════════
