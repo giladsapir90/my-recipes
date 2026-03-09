@@ -9,6 +9,43 @@
 <meta name="apple-mobile-web-app-title" content="מתכונים">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBNxMh3PYu38Nwb_vTk8AjFS12hFImXoRA",
+  authDomain: "my-recipes-7823c.firebaseapp.com",
+  projectId: "my-recipes-7823c",
+  storageBucket: "my-recipes-7823c.firebasestorage.app",
+  messagingSenderId: "619654796461",
+  appId: "1:619654796461:web:affb2f43bd2b7ebcc1a224"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window._fbAuth = auth;
+window._fbDb = db;
+window._fbGoogleProvider = new GoogleAuthProvider();
+window._fbSignIn = () => signInWithPopup(auth, window._fbGoogleProvider);
+window._fbSignOut = () => signOut(auth);
+window._fbOnAuth = (cb) => onAuthStateChanged(auth, cb);
+window._fbLoadData = async (uid) => {
+  const snap = await getDoc(doc(db, 'users', uid, 'data', 'main'));
+  return snap.exists() ? snap.data() : null;
+};
+window._fbSaveData = async (uid, data) => {
+  await setDoc(doc(db, 'users', uid, 'data', 'main'), data);
+};
+window._fbReady = true;
+
+// Trigger app init after Firebase is ready
+document.dispatchEvent(new Event('fb-ready'));
+</script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
@@ -363,17 +400,14 @@ body{font-family:var(--fb);}
   <div class="login-title">ספר המתכונים שלי</div>
   <div class="login-sub">MY RECIPE COLLECTION</div>
   <div class="login-box">
-    <div class="login-tabs">
-      <button class="login-tab active" id="tab-login">כניסה</button>
-      <button class="login-tab" id="tab-register">הרשמה</button>
-    </div>
     <div id="login-form-area">
-      <div class="login-field"><label>שם משתמש</label><input id="login-username" placeholder="השם שלך..." autocomplete="username"></div>
-      <div class="login-field"><label>סיסמא</label><input id="login-password" type="password" placeholder="••••••" autocomplete="current-password"></div>
-      <button class="login-btn" id="btn-do-login">כניסה לספר שלי ←</button>
-      <div class="login-err" id="login-err"></div>
+      <div style="text-align:center;margin-bottom:18px;font-size:13px;color:var(--muted);font-style:italic">כניסה עם חשבון Google שלך</div>
+      <button class="login-btn" id="btn-google-login" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#3c4043;border:1.5px solid #dadce0;font-size:15px;font-weight:600;padding:13px">
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        כניסה עם Google
+      </button>
+      <div class="login-err" id="login-err" style="margin-top:12px"></div>
     </div>
-    <div class="login-users-hint" id="login-users-hint"></div>
   </div>
 </div>
 
@@ -546,47 +580,26 @@ const CAT_ICONS={'אפייה':'🍞','מרקים':'🍲','קינוחים':'🍰'
 const DIFFS=['קל','בינוני','מורכב'];
 const FORM_STEPS=['פרטים','מצרכים','הכנה'];
 const DEFAULT_CATS=['אפייה','מרקים','קינוחים','עיקריות','שימורים','סלטים','ללא גלוטן'];
-const USERS_KEY='rb_users';
-const DATA_PREFIX='rb_data_';
-const SESSION_KEY='rb_session';
+// ══════════════════════════════════════════════════════════════
+//  USER ACCOUNTS  (Firebase)
+// ══════════════════════════════════════════════════════════════
+let _fbUid = null;
 
-// ══════════════════════════════════════════════════════════════
-//  USER ACCOUNTS  (localStorage per-user)
-// ══════════════════════════════════════════════════════════════
-function getUsers(){ try{return JSON.parse(localStorage.getItem(USERS_KEY)||'{}');}catch(e){return{};} }
-function saveUsers(u){ try{localStorage.setItem(USERS_KEY,JSON.stringify(u));}catch(e){} }
-function getUserData(username){
-  try{
-    // Migrate old single-user data to this user on first login
-    const raw=localStorage.getItem(DATA_PREFIX+username);
-    if(raw) return JSON.parse(raw);
-    // Check old keys for migration
-    const OLD=['myRecipeBook','recipeBook_v1','rb3','rb2'];
-    for(const k of OLD){
-      const v=localStorage.getItem(k);
-      if(v){const p=JSON.parse(v);OLD.forEach(ok=>localStorage.removeItem(ok));saveUserData(username,p);return p;}
-    }
-  }catch(e){}
-  return{recipes:[],cats:DEFAULT_CATS};
+async function loadUserState(){
+  const data = await window._fbLoadData(_fbUid);
+  if(data){
+    S.recipes = data.recipes || [];
+    S.cats = data.cats || [...DEFAULT_CATS];
+  } else {
+    S.recipes = [];
+    S.cats = [...DEFAULT_CATS];
+  }
 }
-function saveUserData(username,data){ try{localStorage.setItem(DATA_PREFIX+username,JSON.stringify(data));}catch(e){} }
-function hashPass(p){ let h=0;for(let i=0;i<p.length;i++){h=(Math.imul(31,h)+p.charCodeAt(i))|0;}return h.toString(36); }
-function registerUser(username,password){
-  const users=getUsers();
-  if(users[username]) return 'שם משתמש תפוס';
-  users[username]=hashPass(password);
-  saveUsers(users);
-  return null;
+
+async function saveState(){
+  if(!_fbUid) return;
+  await window._fbSaveData(_fbUid, {recipes:S.recipes, cats:S.cats});
 }
-function loginUser(username,password){
-  const users=getUsers();
-  if(!users[username]) return 'שם משתמש לא קיים';
-  if(users[username]!==hashPass(password)) return 'סיסמא שגויה';
-  return null;
-}
-function getSession(){ try{return localStorage.getItem(SESSION_KEY)||'';}catch(e){return '';} }
-function setSession(u){ try{localStorage.setItem(SESSION_KEY,u);}catch(e){} }
-function clearSession(){ try{localStorage.removeItem(SESSION_KEY);}catch(e){} }
 
 // ══════════════════════════════════════════════════════════════
 //  STATE
@@ -595,12 +608,7 @@ let CU=''; // current user
 const S={recipes:[],cats:[...DEFAULT_CATS],page:'login',activeCat:'הכל',favOnly:false,detailId:null,detailServings:null,editMode:false,delTargetId:null,editCatIdx:null,formStep:1,fd:null,shareId:null,dragSrcIdx:null,cookingStepIdx:0,cookingRecipeId:null};
 let _wakeLock=null;
 
-function loadUserState(){
-  const d=getUserData(CU);
-  S.recipes=d.recipes||[];
-  S.cats=d.cats||[...DEFAULT_CATS];
-}
-function saveState(){ saveUserData(CU,{recipes:S.recipes,cats:S.cats}); }
+// loadUserState and saveState are defined in Firebase auth section above
 
 // ══════════════════════════════════════════════════════════════
 //  UTILS
@@ -631,36 +639,15 @@ function recipeToText(r){
 // ══════════════════════════════════════════════════════════════
 //  LOGIN / REGISTER
 // ══════════════════════════════════════════════════════════════
-let loginMode='login';
 function initLogin(){
-  const users=getUsers();
-  const count=Object.keys(users).length;
-  g('login-users-hint').textContent=count?`${count} משתמשים רשומים`:'';
-  g('tab-login').addEventListener('click',()=>setLoginMode('login'));
-  g('tab-register').addEventListener('click',()=>setLoginMode('register'));
-  g('btn-do-login').addEventListener('click',doLogin);
-  g('login-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
-  g('login-username').addEventListener('keydown',e=>{if(e.key==='Enter')g('login-password').focus();});
-}
-function setLoginMode(mode){
-  loginMode=mode;
-  g('tab-login').classList.toggle('active',mode==='login');
-  g('tab-register').classList.toggle('active',mode==='register');
-  g('btn-do-login').textContent=mode==='login'?'כניסה לספר שלי ←':'צור חשבון ←';
-  g('login-err').textContent='';
-}
-function doLogin(){
-  const u=g('login-username').value.trim();
-  const p=g('login-password').value;
-  if(!u||!p){g('login-err').textContent='נא למלא שם משתמש וסיסמא';return;}
-  let err=null;
-  if(loginMode==='register') err=registerUser(u,p);
-  else err=loginUser(u,p);
-  if(err){g('login-err').textContent=err;return;}
-  CU=u;
-  setSession(u);
-  loadUserState();
-  enterApp();
+  g('btn-google-login').addEventListener('click', async ()=>{
+    try{
+      g('login-err').textContent='';
+      await window._fbSignIn();
+    }catch(err){
+      g('login-err').textContent='שגיאה בכניסה: '+err.message;
+    }
+  });
 }
 function enterApp(){
   g('hdr-username').textContent='שלום, '+CU+' 👋';
@@ -672,13 +659,10 @@ function enterApp(){
 }
 function doLogout(){
   releaseWakeLock();
-  clearSession();
-  CU='';
+  window._fbSignOut();
+  CU='';_fbUid=null;
   S.recipes=[];
   S.cats=[...DEFAULT_CATS];
-  g('login-username').value='';
-  g('login-password').value='';
-  g('login-err').textContent='';
   showPage('login');
 }
 
@@ -1441,11 +1425,27 @@ async function handleScanFile(file){
 }
 
 // ══════════════════════════════════════════════════════════════
-//  INIT — auto-login if session exists
+//  INIT — Firebase auth listener
 // ══════════════════════════════════════════════════════════════
-initLogin();
-const sess=getSession();
-if(sess&&getUsers()[sess]){CU=sess;loadUserState();enterApp();}
+function waitForFb(cb){
+  if(window._fbReady) cb();
+  else document.addEventListener('fb-ready', cb, {once:true});
+}
+
+waitForFb(()=>{
+  initLogin();
+  window._fbOnAuth(async (user)=>{
+    if(user){
+      _fbUid = user.uid;
+      CU = user.displayName || user.email.split('@')[0];
+      await loadUserState();
+      enterApp();
+    } else {
+      CU='';_fbUid=null;
+      showPage('login');
+    }
+  });
+});
 
 // PWA Service Worker
 if('serviceWorker' in navigator){
@@ -1454,3 +1454,33 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+
+{
+  "name": "ספר המתכונים שלי",
+  "short_name": "מתכונים",
+  "description": "ספר המתכונים האישי שלי",
+  "start_url": "/my-recipes/",
+  "display": "standalone",
+  "background_color": "#2C1810",
+  "theme_color": "#2C1810",
+  "orientation": "portrait",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
+
+const CACHE = 'recipes-v1';
+const ASSETS = ['/my-recipes/', '/my-recipes/index.html'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+});
+
+self.addEventListener('fetch', e => {
+  e.respondWith(
+    fetch(e.request).catch(() => caches.match(e.request))
+  );
+});
