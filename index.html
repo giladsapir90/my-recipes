@@ -52,15 +52,15 @@ document.dispatchEvent(new Event('fb-ready'));
 <meta name="theme-color" content="#3A2210">
 <title>ספר המתכונים</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Varela+Round&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#F4E8CC;--cream:#FFFAF0;--border:#C8A87A;
   --brown:#5C3D1E;--dark:#3A2210;--gold:#8B6914;
   --text:#2C1A0E;--muted:#7A5C3A;--light:#E8D5B0;
   --red:#8B3A3A;--green:#3D6B45;--blue:#2A5C8B;
-  --ff:'Playfair Display',Georgia,serif;
-  --fb:'Lora',Georgia,serif;
+  --ff:'Frank Ruhl Libre',Georgia,serif;
+  --fb:'Varela Round',Arial,sans-serif;
   --shadow:0 4px 20px rgba(0,0,0,.12);
   --shadow-lg:0 12px 40px rgba(0,0,0,.2);
 }
@@ -389,9 +389,26 @@ body{font-family:var(--fb);}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes timerPulse{0%,100%{opacity:1}50%{opacity:.55}}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes potBounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.1)}}
+
+/* Vintage home background */
+#page-home{
+  background-image: 
+    radial-gradient(ellipse at 20% 50%, rgba(139,105,20,.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(92,61,30,.1) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%238B6914' opacity='.12'/%3E%3Ccircle cx='0' cy='0' r='1' fill='%238B6914' opacity='.08'/%3E%3Ccircle cx='60' cy='0' r='1' fill='%238B6914' opacity='.08'/%3E%3Ccircle cx='0' cy='60' r='1' fill='%238B6914' opacity='.08'/%3E%3Ccircle cx='60' cy='60' r='1' fill='%238B6914' opacity='.08'/%3E%3C/svg%3E");
+}
 </style>
 </head>
 <body>
+
+<!-- LOADING SCREEN -->
+<div id="loading-screen" style="position:fixed;inset:0;background:#2C1810;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s">
+  <div id="loading-pot" style="font-size:64px;animation:potBounce 1s ease-in-out infinite">🍲</div>
+  <div style="color:#C4A882;font-family:'Frank Ruhl Libre',serif;font-size:18px;margin-top:16px;letter-spacing:2px">ספר המתכונים שלי</div>
+  <div style="color:#8B6914;font-size:12px;margin-top:8px;letter-spacing:1px;font-family:'Varela Round',sans-serif">טוען...</div>
+</div>
+
 <div id="app">
 
 <!-- ══ LOGIN PAGE ══ -->
@@ -428,6 +445,7 @@ body{font-family:var(--fb);}
     <button class="nav-btn" id="btn-nav-add">✏️ חדש</button>
     <button class="nav-btn" id="btn-nav-cats">⚙️ קטגוריות</button>
     <button class="nav-btn" id="btn-nav-backup">💾 גיבוי</button>
+    <button class="nav-btn" id="btn-nav-shareapp">🔗 שתף</button>
   </div>
   <div class="search-bar">
     <input class="search-input" id="search-input" placeholder="🔍  חיפוש מתכון, תגית, מצרך...">
@@ -527,6 +545,33 @@ body{font-family:var(--fb);}
 </div>
 
 <!-- Hidden inputs -->
+<!-- SHARE APP MODAL -->
+<div class="modal-overlay" id="shareapp-modal">
+  <div class="modal-box" style="max-width:340px">
+    <div class="modal-title">🔗 שתף את האפליקציה</div>
+    <div class="modal-text" style="margin-bottom:14px;text-align:center">שתף את ספר המתכונים עם חברים ומשפחה!</div>
+    <div class="backup-row" style="flex-direction:column;gap:10px">
+      <button class="backup-btn" style="background:#25D366;color:#fff;border:none" id="shareapp-whatsapp">💬 שלח בוואטסאפ</button>
+      <button class="backup-btn" style="background:#5B7A3D;color:#fff;border:none" id="shareapp-sms">💬 שלח ב-SMS</button>
+      <button class="backup-btn" id="shareapp-email">✉️ שלח במייל</button>
+      <button class="backup-btn" id="shareapp-copy">📋 העתק קישור</button>
+    </div>
+    <button class="btn-gold" id="btn-shareapp-close" style="margin-top:14px">סגור</button>
+  </div>
+</div>
+
+<!-- CALORIES MODAL -->
+<div class="modal-overlay" id="calories-modal">
+  <div class="modal-box" style="max-width:360px">
+    <div class="modal-title">🔢 הערכת קלוריות (AI)</div>
+    <div id="calories-content" style="text-align:center;padding:10px 0;min-height:60px"></div>
+    <div style="margin-top:12px;padding:10px;background:rgba(139,105,20,.1);border-radius:8px;font-size:11px;color:var(--muted);text-align:center;line-height:1.5">
+      ⚠️ הערכה זו מחושבת על ידי בינה מלאכותית ואינה מדויקת.<br>אין להסתמך עליה לצרכים רפואיים או תזונתיים.
+    </div>
+    <button class="btn-gold" id="btn-calories-close" style="margin-top:14px">סגור</button>
+  </div>
+</div>
+
 <input type="file" id="input-gallery" accept="image/*" style="display:none">
 <input type="file" id="input-camera" accept="image/*" capture="environment" style="display:none">
 <input type="file" id="input-scan" accept="image/*" style="display:none">
@@ -656,6 +701,7 @@ function enterApp(){
   document.title=userTitle();
   showPage('home');
   renderHome();
+  hideLoading();
 }
 function doLogout(){
   releaseWakeLock();
@@ -847,6 +893,7 @@ function renderDetail(){
       <button class="act-btn act-blue" id="btn-det-cook">👨‍🍳 בישול</button>
       <button class="act-btn act-gold" id="btn-det-edit">✏️ עריכה</button>
       <button class="act-btn act-green" id="btn-det-share">📤 שיתוף</button>
+      <button class="act-btn" style="background:#6B4E8B;color:#FFF9EE" id="btn-det-calories">🔢 קלוריות (AI)</button>
       <button class="act-btn act-red" id="btn-det-del">🗑 מחיקה</button>
     </div>`;
   g('btn-det-back').addEventListener('click',goHome);
@@ -854,6 +901,7 @@ function renderDetail(){
   g('btn-det-cook').addEventListener('click',()=>openCookingMode(r.id));
   g('btn-det-edit').addEventListener('click',()=>openEdit(r.id));
   g('btn-det-share').addEventListener('click',()=>openShare(r.id));
+  g('btn-det-calories').addEventListener('click',()=>estimateCalories(r));
   g('btn-det-del').addEventListener('click',()=>openDelModal(r.id));
 
   function scaleIng(raw){
@@ -1307,7 +1355,7 @@ function importBackup(file){
       if(!data.recipes)throw new Error();
       if(confirm(`לייבא ${data.recipes.length} מתכונים? הפעולה תחליף את המתכונים הנוכחיים.`)){
         S.recipes=data.recipes;if(data.cats)S.cats=data.cats;
-        saveState();closeBackupModal();goHome();
+        saveState().then(()=>{closeBackupModal();goHome();alert('המתכונים יובאו בהצלחה ונשמרו!');});
       }
     }catch(err){alert('שגיאה בקריאת הקובץ');}
   };
@@ -1443,9 +1491,74 @@ waitForFb(()=>{
     } else {
       CU='';_fbUid=null;
       showPage('login');
+      hideLoading();
     }
   });
 });
+
+// ══════════════════════════════════════════════════════════════
+//  SHARE APP
+// ══════════════════════════════════════════════════════════════
+const APP_URL = 'https://giladsapir90.github.io/my-recipes/';
+const APP_MSG = 'היי! אני משתמש בספר מתכונים מדהים — כנס ואצור ספר מתכונים משלך! ' + APP_URL;
+
+function openShareApp(){g('shareapp-modal').classList.add('show');}
+function closeShareApp(){g('shareapp-modal').classList.remove('show');}
+
+g('btn-nav-shareapp').addEventListener('click', openShareApp);
+g('btn-shareapp-close').addEventListener('click', closeShareApp);
+g('shareapp-modal').addEventListener('click', e=>{if(e.target===g('shareapp-modal'))closeShareApp();});
+g('shareapp-whatsapp').addEventListener('click',()=>{window.open('https://wa.me/?text='+encodeURIComponent(APP_MSG),'_blank');closeShareApp();});
+g('shareapp-sms').addEventListener('click',()=>{window.open('sms:?body='+encodeURIComponent(APP_MSG),'_blank');closeShareApp();});
+g('shareapp-email').addEventListener('click',()=>{window.open('mailto:?subject='+encodeURIComponent('ספר מתכונים מדהים!')+'&body='+encodeURIComponent(APP_MSG),'_blank');closeShareApp();});
+g('shareapp-copy').addEventListener('click',()=>{navigator.clipboard.writeText(APP_URL).then(()=>alert('הקישור הועתק!')).catch(()=>alert(APP_URL));closeShareApp();});
+
+// ══════════════════════════════════════════════════════════════
+//  CALORIE ESTIMATION
+// ══════════════════════════════════════════════════════════════
+async function estimateCalories(r){
+  g('calories-modal').classList.add('show');
+  g('calories-content').innerHTML='<div class="scan-loading"><span class="scan-spinner">🤖</span> מחשב קלוריות...</div>';
+  
+  let ingsText = '';
+  if(r.ingredientGroups&&r.ingredientGroups.length){
+    r.ingredientGroups.forEach(g2=>{g2.items.forEach(i=>{ingsText+=i+'\n';});});
+  } else {
+    (r.ingredients||[]).forEach(i=>{ingsText+=i+'\n';});
+  }
+  
+  try{
+    const res = await fetch('https://reciep-proxy.giladsapir90.workers.dev/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        messages:[{role:'user',content:`הערך קלוריות למנה אחת של המתכון הבא בעברית:
+שם: ${r.title}
+מנות: ${r.servings}
+מצרכים:
+${ingsText}
+תן הערכה קצרה: סה"כ קלוריות למנה, וחלוקה גסה לחלבון/פחמימות/שומן. 2-3 משפטים בלבד.`}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content ? data.content.map(c=>c.text||'').join('') : 'שגיאה בחישוב';
+    g('calories-content').innerHTML='<div style="text-align:right;line-height:1.7;font-size:14px;color:var(--text)">'+esc(text)+'</div>';
+  } catch(err) {
+    g('calories-content').innerHTML='<div style="color:var(--red)">שגיאה בחישוב הקלוריות</div>';
+  }
+}
+g('btn-calories-close').addEventListener('click',()=>g('calories-modal').classList.remove('show'));
+g('calories-modal').addEventListener('click',e=>{if(e.target===g('calories-modal'))g('calories-modal').classList.remove('show');});
+
+// ══════════════════════════════════════════════════════════════
+//  LOADING SCREEN
+// ══════════════════════════════════════════════════════════════
+function hideLoading(){
+  const ls = document.getElementById('loading-screen');
+  if(ls){ls.style.opacity='0';setTimeout(()=>ls.remove(),500);}
+}
 
 // PWA Service Worker
 if('serviceWorker' in navigator){
@@ -1454,33 +1567,3 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-
-{
-  "name": "ספר המתכונים שלי",
-  "short_name": "מתכונים",
-  "description": "ספר המתכונים האישי שלי",
-  "start_url": "/my-recipes/",
-  "display": "standalone",
-  "background_color": "#2C1810",
-  "theme_color": "#2C1810",
-  "orientation": "portrait",
-  "lang": "he",
-  "dir": "rtl",
-  "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
-  ]
-}
-
-const CACHE = 'recipes-v1';
-const ASSETS = ['/my-recipes/', '/my-recipes/index.html'];
-
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-});
-
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    fetch(e.request).catch(() => caches.match(e.request))
-  );
-});
