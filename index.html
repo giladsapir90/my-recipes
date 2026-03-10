@@ -13,7 +13,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBNxMh3PYu38Nwb_vTk8AjFS12hFImXoRA",
@@ -35,41 +35,34 @@ window._fbSignIn = () => signInWithPopup(auth, window._fbGoogleProvider);
 window._fbSignOut = () => signOut(auth);
 window._fbOnAuth = (cb) => onAuthStateChanged(auth, cb);
 window._fbLoadData = async (uid) => {
-  // Load meta (cats) + all recipe documents
   const metaSnap = await getDoc(doc(db, 'users', uid, 'meta', 'main'));
   const meta = metaSnap.exists() ? metaSnap.data() : {};
-  
-  // Load all recipes from subcollection
-  const { getDocs, collection } = await import("https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js");
   const recipesSnap = await getDocs(collection(db, 'users', uid, 'recipes'));
   const recipes = [];
   recipesSnap.forEach(d => recipes.push(d.data()));
-  
   return { cats: meta.cats || null, recipes };
 };
 window._fbSaveData = async (uid, data) => {
-  const { writeBatch, collection, doc: fbDoc } = await import("https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js");
-  
-  // Save cats in meta document
+  // Save cats
   await setDoc(doc(db, 'users', uid, 'meta', 'main'), { cats: data.cats });
   
-  // Save each recipe as separate document (handles large images)
-  const batch = writeBatch(db);
+  // Delete existing recipes
   const colRef = collection(db, 'users', uid, 'recipes');
-  
-  // Delete all existing recipes first by getting them
   const existing = await getDocs(colRef);
-  existing.forEach(d => batch.delete(d.ref));
-  await batch.commit();
+  if(existing.size > 0) {
+    const delBatch = writeBatch(db);
+    existing.forEach(d => delBatch.delete(d.ref));
+    await delBatch.commit();
+  }
   
   // Write new recipes in batches of 20
   for(let i = 0; i < data.recipes.length; i += 20) {
     const b = writeBatch(db);
     data.recipes.slice(i, i+20).forEach(r => {
-      // Strip image to reduce size if still too large
+      // Remove base64 image if recipe doc too large — store thumbnail only
       const recipeData = {...r};
-      const docRef = fbDoc(colRef, String(r.id));
-      b.set(docRef, recipeData);
+      if(recipeData.image && recipeData.image.length > 500000) recipeData.image = null;
+      b.set(doc(db, 'users', uid, 'recipes', String(r.id)), recipeData);
     });
     await b.commit();
   }
