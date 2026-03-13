@@ -157,10 +157,12 @@ body{font-family:var(--fb);}
 
 /* ── CARDS ── */
 .cards-list{padding:11px 12px;display:flex;flex-direction:column;gap:11px;}
-.card{background:var(--cream);border:1.5px solid var(--border);border-radius:13px;cursor:pointer;box-shadow:var(--shadow);overflow:hidden;position:relative;animation:fadeSlide .32s ease both;transition:box-shadow .2s,transform .15s;}
-.card:active{box-shadow:1px 2px 5px rgba(0,0,0,.08);transform:scale(.99);}
-.card-accent{position:absolute;top:0;right:0;width:5px;height:100%;border-radius:0 13px 13px 0;}
-.card-img{width:100%;height:155px;object-fit:cover;display:block;}
+.card{background:var(--cream);border:1.5px solid var(--border);border-radius:16px;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.1);overflow:hidden;position:relative;animation:fadeSlide .32s ease both;transition:box-shadow .2s,transform .15s;}
+.card:active{box-shadow:1px 2px 5px rgba(0,0,0,.08);transform:scale(.98);}
+.card-accent{position:absolute;top:0;right:0;width:5px;height:100%;border-radius:0 16px 16px 0;}
+.card-img{width:100%;height:175px;object-fit:cover;display:block;}
+.card-img-overlay{position:relative;}.card-img-overlay::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,rgba(44,24,16,.55));pointer-events:none;}
+.card-no-img{width:100%;height:80px;display:flex;align-items:center;justify-content:center;font-size:42px;background:linear-gradient(135deg,var(--light),var(--cream));}
 .card-body{padding:11px 13px 10px 44px;}
 .card-drag-handle{position:absolute;left:0;top:0;bottom:0;width:36px;display:flex;align-items:center;justify-content:center;color:var(--light);font-size:16px;cursor:grab;touch-action:none;}
 .card-drag-handle:active{cursor:grabbing;color:var(--gold);}
@@ -586,6 +588,18 @@ body{font-family:var(--fb);}
   </div>
 </div>
 
+<!-- SUGGEST SIMILAR MODAL -->
+<div class="modal-overlay" id="suggest-modal">
+  <div class="modal-box" style="max-width:380px">
+    <div class="modal-title">✨ מתכון דומה (AI)</div>
+    <div id="suggest-content" style="text-align:right;padding:6px 0;min-height:60px;line-height:1.8;font-size:14px"></div>
+    <div style="margin-top:12px;padding:10px;background:rgba(42,92,139,.08);border-radius:8px;font-size:11px;color:var(--muted);text-align:center">
+      ✦ הצעה זו נוצרה על ידי בינה מלאכותית ✦
+    </div>
+    <button class="btn-gold" id="btn-suggest-close" style="margin-top:14px">סגור</button>
+  </div>
+</div>
+
 <!-- CALORIES MODAL -->
 <div class="modal-overlay" id="calories-modal">
   <div class="modal-box" style="max-width:360px">
@@ -819,7 +833,10 @@ function renderCards(){
   g('cards-list').innerHTML=list.map((r,i)=>{
     const cc=cColor(r.category),ci=cIcon(r.category);
     return `<div class="card" data-openid="${r.id}" data-listidx="${i}" style="animation-delay:${i*.03}s" draggable="true">
-      ${r.image?`<img class="card-img" src="${esc(r.image)}" alt="">`:'' }
+      ${r.image
+        ?`<div class="card-img-overlay"><img class="card-img" src="${esc(r.image)}" alt=""></div>`
+        :`<div class="card-no-img">${r.emoji||'🍽️'}</div>`
+      }
       <div class="card-accent" style="background:${cc}"></div>
       <div class="card-drag-handle" data-draghandle="1" title="גרור לסידור">⠿</div>
       <div class="card-body">
@@ -920,6 +937,7 @@ function renderDetail(){
       <button class="act-btn act-gold" id="btn-det-edit">✏️ עריכה</button>
       <button class="act-btn act-green" id="btn-det-share">📤 שיתוף</button>
       <button class="act-btn" style="background:#6B4E8B;color:#FFF9EE" id="btn-det-calories">🔢 קלוריות (AI)</button>
+      <button class="act-btn" style="background:#2A5C8B;color:#FFF9EE" id="btn-det-suggest">✨ מתכון דומה (AI)</button>
       <button class="act-btn act-red" id="btn-det-del">🗑 מחיקה</button>
     </div>`;
   g('btn-det-back').addEventListener('click',goHome);
@@ -928,6 +946,7 @@ function renderDetail(){
   g('btn-det-edit').addEventListener('click',()=>openEdit(r.id));
   g('btn-det-share').addEventListener('click',()=>openShare(r.id));
   g('btn-det-calories').addEventListener('click',()=>estimateCalories(r));
+  g('btn-det-suggest').addEventListener('click',()=>suggestSimilarRecipe(r));
   g('btn-det-del').addEventListener('click',()=>openDelModal(r.id));
 
   function scaleIng(raw){
@@ -1079,7 +1098,28 @@ function updateTimerUI(){const d=g('timer-display'),f=g('timer-fill'),l=g('timer
 // ══════════════════════════════════════════════════════════════
 //  IMAGE
 // ══════════════════════════════════════════════════════════════
-function loadImageFile(file,cb){if(!file)return;const r=new FileReader();r.onload=ev=>cb(ev.target.result);r.readAsDataURL(file);}
+function loadImageFile(file,cb){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=800; // max dimension
+      let w=img.width,h=img.height;
+      if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
+      const canvas=document.createElement('canvas');
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      // Compress to under 200KB
+      let q=0.8;
+      let data=canvas.toDataURL('image/jpeg',q);
+      while(data.length>200000&&q>0.3){q-=0.1;data=canvas.toDataURL('image/jpeg',q);}
+      cb(data);
+    };
+    img.src=ev.target.result;
+  };
+  r.readAsDataURL(file);
+}
 
 // ══════════════════════════════════════════════════════════════
 //  EMOJI PICKER  (uses native OS keyboard emoji panel)
@@ -1579,6 +1619,52 @@ ${ingsText}
   }
 }
 g('btn-calories-close').addEventListener('click',()=>g('calories-modal').classList.remove('show'));
+
+// ══════════════════════════════════════════════════════════════
+//  SUGGEST SIMILAR RECIPE
+// ══════════════════════════════════════════════════════════════
+async function suggestSimilarRecipe(r){
+  g('suggest-modal').classList.add('show');
+  g('suggest-content').innerHTML='<div class="scan-loading"><span class="scan-spinner">✨</span> מחפש השראה...</div>';
+
+  let ingsText='';
+  if(r.ingredientGroups&&r.ingredientGroups.length){
+    r.ingredientGroups.forEach(g2=>g2.items.forEach(i=>{ingsText+=i+'\n';}));
+  } else {(r.ingredients||[]).forEach(i=>{ingsText+=i+'\n';});}
+
+  try{
+    const res=await fetch('https://reciep-proxy.giladsapir90.workers.dev/',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        messages:[{role:'user',content:`בהתבסס על המתכון הבא, הצע מתכון דומה אחד עם וריאציה מעניינת. כתוב בעברית.
+
+שם: ${r.title}
+קטגוריה: ${r.category}
+מצרכים:
+${ingsText}
+
+הצע:
+1. שם המתכון המוצע
+2. מה שונה/מעניין בו (משפט אחד)
+3. רשימת מצרכים עיקריים (עד 6)
+4. 3 שלבי הכנה קצרים
+
+פורמט תשובה: ברור וקצר, עם כותרות מודגשות.`}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?data.content.map(c=>c.text||'').join(''):'שגיאה';
+    g('suggest-content').innerHTML=text.replace(/
+/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+  }catch(err){
+    g('suggest-content').innerHTML='<div style="color:var(--red)">שגיאה בטעינת ההצעה</div>';
+  }
+}
+g('btn-suggest-close').addEventListener('click',()=>g('suggest-modal').classList.remove('show'));
+g('suggest-modal').addEventListener('click',e=>{if(e.target===g('suggest-modal'))g('suggest-modal').classList.remove('show');});
 g('calories-modal').addEventListener('click',e=>{if(e.target===g('calories-modal'))g('calories-modal').classList.remove('show');});
 
 // ══════════════════════════════════════════════════════════════
