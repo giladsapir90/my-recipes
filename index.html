@@ -193,8 +193,8 @@ body{font-family:var(--fb);}
 .detail-title{font-family:var(--ff);font-size:21px;font-weight:900;color:#FFF9EE;text-align:center;text-shadow:1px 2px 7px rgba(0,0,0,.45);line-height:1.2;position:relative;z-index:1;}
 .detail-badges{display:flex;justify-content:center;gap:6px;margin-top:9px;flex-wrap:wrap;position:relative;z-index:1;}
 .badge{background:rgba(255,249,238,.14);border:1px solid rgba(255,249,238,.28);color:#FFF9EE;padding:3px 9px;border-radius:12px;font-size:12px;}
-.detail-actions{display:flex;gap:6px;margin-top:11px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;}
-.act-btn{border:none;padding:7px 13px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:12px;font-weight:600;transition:filter .15s;}
+.detail-actions{display:flex;gap:5px;margin-top:11px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;padding:0 4px;}
+.act-btn{border:none;padding:6px 10px;border-radius:5px;cursor:pointer;font-family:var(--fb);font-size:11px;font-weight:600;transition:filter .15s;}
 .act-btn:active{filter:brightness(.85);}
 .act-gold{background:var(--gold);color:#FFF9EE;}
 .act-red{background:var(--red);color:#FFF9EE;}
@@ -1545,8 +1545,18 @@ async function handleScanFile(file){
 //  INIT — Firebase auth listener
 // ══════════════════════════════════════════════════════════════
 function waitForFb(cb){
-  if(window._fbReady) cb();
-  else document.addEventListener('fb-ready', cb, {once:true});
+  if(window._fbReady){cb();return;}
+  let called=false;
+  const once=()=>{if(!called){called=true;cb();}};
+  document.addEventListener('fb-ready',once,{once:true});
+  // Fallback: if Firebase takes too long, show login page
+  setTimeout(()=>{
+    if(!called){
+      called=true;
+      hideLoading();
+      g('login-err').textContent='שגיאה בטעינה — נסה לרענן';
+    }
+  },8000);
 }
 
 waitForFb(()=>{
@@ -1657,8 +1667,7 @@ ${ingsText}
     });
     const data=await res.json();
     const text=data.content?data.content.map(c=>c.text||'').join(''):'שגיאה';
-    g('suggest-content').innerHTML=text.replace(/
-/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
+    g('suggest-content').innerHTML=text.split('\n').join('<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>');
   }catch(err){
     g('suggest-content').innerHTML='<div style="color:var(--red)">שגיאה בטעינת ההצעה</div>';
   }
