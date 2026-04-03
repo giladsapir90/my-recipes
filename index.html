@@ -40,7 +40,14 @@ window._fbLoadData = async (uid) => {
   const recipesSnap = await getDocs(collection(db, 'users', uid, 'recipes'));
   const recipes = [];
   recipesSnap.forEach(d => recipes.push(d.data()));
-  return { cats: meta.cats || null, recipes };
+  return { cats: meta.cats || null, recipes, aiCredits: meta.aiCredits || 0 };
+};
+window._fbGetCredits = async (uid) => {
+  const metaSnap = await getDoc(doc(db, 'users', uid, 'meta', 'main'));
+  return metaSnap.exists() ? (metaSnap.data().aiCredits || 0) : 0;
+};
+window._fbSetCredits = async (uid, credits) => {
+  await setDoc(doc(db, 'users', uid, 'meta', 'main'), { aiCredits: credits }, { merge: true });
 };
 window._fbSaveData = async (uid, data) => {
   // Save cats
@@ -77,6 +84,7 @@ document.dispatchEvent(new Event('fb-ready'));
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#3A2210">
 <title>ספר המתכונים</title>
+<script src="https://www.paypal.com/sdk/js?client-id=AY9DeTgH2AecRoFiNlqthHy0iA8JRFBx_AgZ9jPGhQ2cc__3fC03mU5fiV6rScg2IjqMR4Gf1qnzzkf5&currency=USD&intent=capture" data-sdk-integration-source="button-factory"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Varela+Round&display=swap" rel="stylesheet">
 <style>
@@ -475,6 +483,7 @@ body{font-family:var(--fb);background:var(--bg);}
     <button class="nav-btn" id="btn-nav-cats">⚙️ קטגוריות</button>
     <button class="nav-btn" id="btn-nav-backup">💾 גיבוי</button>
     <button class="nav-btn" id="btn-nav-shareapp">🔗 שתף</button>
+    <button class="nav-btn" id="btn-nav-credits">✨ <span id="nav-credits-count">?</span></button>
   </div>
   <div class="search-bar">
     <input class="search-input" id="search-input" placeholder="🔍  חיפוש מתכון, תגית, מצרך...">
@@ -589,6 +598,23 @@ body{font-family:var(--fb);background:var(--bg);}
   </div>
 </div>
 
+<!-- CREDITS MODAL -->
+<div class="modal-overlay" id="credits-modal">
+  <div class="modal-box" style="max-width:340px;text-align:center">
+    <div style="font-size:36px;margin-bottom:8px">✨</div>
+    <div class="modal-title">קרדיטים ל-AI</div>
+    <div id="credits-balance" style="font-size:28px;font-weight:700;color:var(--gold);margin:12px 0"></div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:16px">קרדיטים זמינים לשימוש בסריקה, קלוריות ומתכון דומה</div>
+    <div style="background:rgba(139,105,20,.08);border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px">100 קרדיטים = $1</div>
+      <div style="font-size:12px;color:var(--muted)">תשלום חד פעמי דרך PayPal</div>
+    </div>
+    <div id="paypal-btn-container" style="margin-bottom:12px"></div>
+    <div id="credits-msg" style="font-size:12px;color:var(--muted);min-height:20px"></div>
+    <button class="btn-gold" id="btn-credits-close" style="margin-top:10px">סגור</button>
+  </div>
+</div>
+
 <!-- SUGGEST SIMILAR MODAL -->
 <div class="modal-overlay" id="suggest-modal">
   <div class="modal-box" style="max-width:380px">
@@ -676,9 +702,11 @@ async function loadUserState(){
   if(data){
     S.recipes = data.recipes || [];
     S.cats = data.cats || [...DEFAULT_CATS];
+    S.aiCredits = data.aiCredits || 0;
   } else {
     S.recipes = [];
     S.cats = [...DEFAULT_CATS];
+    S.aiCredits = 0;
   }
 }
 
@@ -691,7 +719,7 @@ async function saveState(){
 //  STATE
 // ══════════════════════════════════════════════════════════════
 let CU=''; // current user
-const S={recipes:[],cats:[...DEFAULT_CATS],page:'login',activeCat:'הכל',favOnly:false,detailId:null,detailServings:null,editMode:false,delTargetId:null,editCatIdx:null,formStep:1,fd:null,shareId:null,dragSrcIdx:null,cookingStepIdx:0,cookingRecipeId:null};
+const S={recipes:[],cats:[...DEFAULT_CATS],aiCredits:0,page:'login',activeCat:'הכל',favOnly:false,detailId:null,detailServings:null,editMode:false,delTargetId:null,editCatIdx:null,formStep:1,fd:null,shareId:null,dragSrcIdx:null,cookingStepIdx:0,cookingRecipeId:null};
 let _wakeLock=null;
 
 // loadUserState and saveState are defined in Firebase auth section above
@@ -742,6 +770,7 @@ function enterApp(){
   document.title=userTitle();
   showPage('home');
   renderHome();
+  updateCreditsDisplay();
   hideLoading();
 }
 function doLogout(){
@@ -1432,6 +1461,8 @@ function importBackup(file){
 //  AI SCAN
 // ══════════════════════════════════════════════════════════════
 async function scanRecipeFromImage(file){
+  const ok = await checkAndUseCredit('סריקה');
+  if(!ok) return null;
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
     reader.onload=async ev=>{
@@ -1593,6 +1624,8 @@ g('shareapp-copy').addEventListener('click',()=>{navigator.clipboard.writeText(A
 //  CALORIE ESTIMATION
 // ══════════════════════════════════════════════════════════════
 async function estimateCalories(r){
+  const ok = await checkAndUseCredit('קלוריות');
+  if(!ok) return;
   g('calories-modal').classList.add('show');
   g('calories-content').innerHTML='<div class="scan-loading"><span class="scan-spinner">🤖</span> מחשב קלוריות...</div>';
   
@@ -1631,6 +1664,8 @@ g('btn-calories-close').addEventListener('click',()=>g('calories-modal').classLi
 //  SUGGEST SIMILAR RECIPE
 // ══════════════════════════════════════════════════════════════
 async function suggestSimilarRecipe(r){
+  const ok = await checkAndUseCredit('מתכון דומה');
+  if(!ok) return;
   g('suggest-modal').classList.add('show');
   g('suggest-content').innerHTML='<div class="scan-loading"><span class="scan-spinner">✨</span> מחפש השראה...</div>';
 
@@ -1679,6 +1714,83 @@ g('calories-modal').addEventListener('click',e=>{if(e.target===g('calories-modal
 function hideLoading(){
   const ls = document.getElementById('loading-screen');
   if(ls){ls.style.opacity='0';setTimeout(()=>ls.remove(),500);}
+}
+
+// ══════════════════════════════════════════════════════════════
+//  CREDITS SYSTEM
+// ══════════════════════════════════════════════════════════════
+function updateCreditsDisplay(){
+  const c = S.aiCredits || 0;
+  const el = document.getElementById('nav-credits-count');
+  if(el) el.textContent = c;
+}
+
+async function useCredit(){
+  if(S.aiCredits <= 0) return false;
+  S.aiCredits--;
+  updateCreditsDisplay();
+  await window._fbSetCredits(_fbUid, S.aiCredits);
+  return true;
+}
+
+function openCreditsModal(){
+  g('credits-balance').textContent = (S.aiCredits || 0) + ' קרדיטים';
+  g('credits-msg').textContent = '';
+  g('credits-modal').classList.add('show');
+  // Render PayPal button if not already rendered
+  const container = g('paypal-btn-container');
+  if(container && container.children.length === 0 && window.paypal){
+    window.paypal.Buttons({
+      style: { layout:'vertical', color:'gold', shape:'rect', label:'pay', height:40 },
+      createOrder: async () => {
+        const res = await fetch('https://reciep-proxy.giladsapir90.workers.dev/paypal-create-order', {
+          method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'
+        });
+        const data = await res.json();
+        return data.id;
+      },
+      onApprove: async (data) => {
+        g('credits-msg').textContent = '⏳ מאמת תשלום...';
+        try {
+          const res = await fetch('https://reciep-proxy.giladsapir90.workers.dev/paypal-capture-order', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ orderID: data.orderID })
+          });
+          const result = await res.json();
+          if(result.success){
+            S.aiCredits = (S.aiCredits || 0) + 100;
+            await window._fbSetCredits(_fbUid, S.aiCredits);
+            updateCreditsDisplay();
+            g('credits-balance').textContent = S.aiCredits + ' קרדיטים';
+            g('credits-msg').textContent = '✅ התשלום הצליח! נוספו 100 קרדיטים';
+          } else {
+            g('credits-msg').textContent = '❌ שגיאה באימות התשלום';
+          }
+        } catch(err) {
+          g('credits-msg').textContent = '❌ שגיאת רשת — נסה שוב';
+        }
+      },
+      onError: () => { g('credits-msg').textContent = '❌ שגיאה בתשלום'; }
+    }).render('#paypal-btn-container');
+  }
+}
+
+g('btn-nav-credits').addEventListener('click', openCreditsModal);
+g('btn-credits-close').addEventListener('click', ()=>g('credits-modal').classList.remove('show'));
+g('credits-modal').addEventListener('click', e=>{if(e.target===g('credits-modal'))g('credits-modal').classList.remove('show');});
+
+// ══════════════════════════════════════════════════════════════
+//  CHECK CREDITS BEFORE AI CALLS
+// ══════════════════════════════════════════════════════════════
+async function checkAndUseCredit(actionName){
+  if(S.aiCredits <= 0){
+    if(confirm('אין לך קרדיטים. קנה 100 קרדיטים ב-$1 דרך PayPal?')){
+      openCreditsModal();
+    }
+    return false;
+  }
+  return await useCredit();
 }
 
 // PWA Service Worker
