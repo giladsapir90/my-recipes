@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "io.github.giladsapir90.twa",
+    "sha256_cert_fingerprints": [
+      "75:DA:5E:BD:D3:63:EF:51:ED:25:88:E1:3A:6F:70:02:42:21:B8:26:0B:84:AB:00:C7:48:16:E3:94:25:07:AB"
+    ]
+  }
+}]
