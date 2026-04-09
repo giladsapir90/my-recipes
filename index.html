@@ -99,11 +99,16 @@ document.dispatchEvent(new Event('fb-ready'));
   --shadow:0 4px 20px rgba(0,0,0,.12);
   --shadow-lg:0 12px 40px rgba(0,0,0,.2);
 }
+body.dark-mode{
+  --bg:#1A0F08;--cream:#261608;--border:#5C3D1E;
+  --brown:#C4A882;--dark:#0E0805;--gold:#C8961A;
+  --text:#F5E6C8;--muted:#A07850;--light:#3A2210;
+  --warm:#1E1208;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;background:var(--dark);overflow:hidden;}
 body{font-family:var(--fb);background:var(--bg);}
 #app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
-.page{display:none;flex-direction:column;height:100%;overflow:hidden;}
+.page{display:none;flex-direction:column;height:100%;overflow:hidden;opacity:0;transition:opacity .18s ease;}.page.active{opacity:1;}
 .page.active{display:flex;}
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .scroll-area::-webkit-scrollbar{width:3px;}
@@ -346,6 +351,9 @@ body{font-family:var(--fb);background:var(--bg);}
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:300;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(3px);}
 .modal-overlay.show{display:flex;}
 .modal-box{background:var(--cream);border-radius:14px;padding:22px;width:100%;max-width:340px;border:2px solid var(--border);box-shadow:var(--shadow-lg);animation:modalIn .22s ease;max-height:82vh;overflow-y:auto;}
+.chat-msg{padding:8px 12px;border-radius:10px;font-size:13px;line-height:1.55;max-width:85%;direction:rtl;}
+.chat-msg.user{background:var(--gold);color:#FFF9EE;align-self:flex-start;border-radius:10px 10px 3px 10px;}
+.chat-msg.ai{background:var(--light);color:var(--text);align-self:flex-end;border-radius:10px 10px 10px 3px;}
 .modal-title{font-family:var(--ff);font-size:17px;font-weight:700;color:var(--brown);text-align:center;margin-bottom:9px;}
 .modal-text{font-size:14px;color:var(--muted);text-align:center;margin-bottom:19px;line-height:1.6;}
 .modal-btns{display:flex;gap:9px;}
@@ -484,6 +492,7 @@ body{font-family:var(--fb);background:var(--bg);}
     <button class="nav-btn" id="btn-nav-backup">💾 גיבוי</button>
     <button class="nav-btn" id="btn-nav-shareapp">🔗 שתף</button>
     <button class="nav-btn" id="btn-nav-credits">✨ <span id="nav-credits-count">?</span></button>
+    <button class="nav-btn" id="btn-nav-darkmode">🌙</button>
   </div>
   <div class="search-bar">
     <input class="search-input" id="search-input" placeholder="🔍  חיפוש מתכון, תגית, מצרך...">
@@ -612,6 +621,20 @@ body{font-family:var(--fb);background:var(--bg);}
     <div id="paypal-btn-container" style="margin-bottom:12px"></div>
     <div id="credits-msg" style="font-size:12px;color:var(--muted);min-height:20px"></div>
     <button class="btn-gold" id="btn-credits-close" style="margin-top:10px">סגור</button>
+  </div>
+</div>
+
+<!-- RECIPE CHAT MODAL -->
+<div class="modal-overlay" id="chat-modal">
+  <div class="modal-box" style="max-width:400px;max-height:80vh;display:flex;flex-direction:column">
+    <div class="modal-title">💬 שאל על המתכון</div>
+    <div id="chat-messages" style="flex:1;overflow-y:auto;margin:10px 0;display:flex;flex-direction:column;gap:8px;max-height:300px;min-height:80px"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input id="chat-input" type="text" placeholder="למשל: במה אפשר להחליף את החמאה?" 
+        style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:13px;color:var(--text);background:var(--cream);direction:rtl" />
+      <button id="chat-send" style="background:var(--gold);border:none;border-radius:8px;padding:8px 14px;color:#FFF9EE;cursor:pointer;font-size:16px">→</button>
+    </div>
+    <button class="btn-gold" id="btn-chat-close" style="margin-top:10px">סגור</button>
   </div>
 </div>
 
@@ -832,8 +855,28 @@ function removeACDropdown(){
 // ══════════════════════════════════════════════════════════════
 //  NAVIGATION
 // ══════════════════════════════════════════════════════════════
-function showPage(name){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));g('page-'+name).classList.add('active');S.page=name;}
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  g('page-'+name).classList.add('active');
+  S.page=name;
+  // Push state for Android back button support
+  if(name==='home'){
+    history.replaceState({page:'home'}, '');
+  } else {
+    history.pushState({page:name}, '');
+  }
+}
 function goHome(){removeACDropdown();showPage('home');renderHome();}
+
+// Handle Android hardware back button
+window.addEventListener('popstate', (e)=>{
+  if(S.page === 'detail' || S.page === 'form'){
+    history.pushState({page:'home'}, '');
+    goHome();
+  } else {
+    history.pushState({page:'home'}, '');
+  }
+});
 
 // ══════════════════════════════════════════════════════════════
 //  HOME
@@ -855,11 +898,26 @@ function renderCards(){
   const list=S.recipes.filter(r=>{
     if(S.favOnly&&!r.favorite)return false;
     if(S.activeCat!=='הכל'&&r.category!==S.activeCat)return false;
-    if(q){const ings=[...(r.ingredients||[]),...(r.ingredientGroups||[]).flatMap(g=>g.items||[])];return r.title.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q))||ings.some(i=>i.toLowerCase().includes(q));}
+    if(q){const ings=[...(r.ingredients||[]),...(r.ingredientGroups||[]).flatMap(g=>g.items||[])];return r.title.toLowerCase().includes(q)||r.description.toLowerCase().includes(q)||(r.tags||[]).some(t=>t.toLowerCase().includes(q))||ings.some(i=>i.toLowerCase().includes(q))||r.notes?.toLowerCase().includes(q);}
     return true;
   });
+  // Find matched ingredient for display
+  function getMatchedIng(r){
+    if(!q)return null;
+    const ings=[...(r.ingredients||[]),...(r.ingredientGroups||[]).flatMap(g=>g.items||[])];
+    return ings.find(i=>i.toLowerCase().includes(q))||null;
+  }
   g('filter-count').textContent=list.length+' מתכונים'+(S.favOnly?' מועדפים':'')+(S.activeCat!=='הכל'?' ב'+S.activeCat:'');
-  if(!list.length){const f=S.recipes.length===0;g('cards-list').innerHTML=`<div class="empty-state"><div class="empty-icon">${f?'📖':'📭'}</div><div style="font-style:italic">${f?'הספר ריק':'לא נמצאו מתכונים'}</div>${f?'<div class="empty-hint">לחץ ✏️ חדש כדי להתחיל</div>':''}</div>`;return;}
+  if(!list.length){
+    const f=S.recipes.length===0;
+    const q2=g('search-input').value.trim();
+    g('cards-list').innerHTML=`<div class="empty-state">
+      <div class="empty-icon">${f?'📖':q2?'🔍':'📭'}</div>
+      <div style="font-style:italic">${f?'הספר ריק':q2?'לא נמצא מתכון עם "'+esc(q2)+'"':'לא נמצאו מתכונים'}</div>
+      ${f?'<div class="empty-hint">לחץ ✏️ חדש כדי להתחיל</div>':''}
+    </div>`;
+    return;
+  }
   g('cards-list').innerHTML=list.map((r,i)=>{
     const cc=cColor(r.category),ci=cIcon(r.category);
     return `<div class="card" data-openid="${r.id}" data-listidx="${i}" style="animation-delay:${i*.03}s" draggable="true">
@@ -874,7 +932,7 @@ function renderCards(){
           </div>
           <button class="fav-star${r.favorite?' on':''}" data-favid="${r.id}">${r.favorite?'★':'☆'}</button>
         </div>
-        <div class="card-desc">${esc(r.description)}</div>
+        <div class="card-desc">${(()=>{const m=getMatchedIng(r);return m?'🔍 מצרך: <strong>'+esc(m)+'</strong>':esc(r.description);})()}</div>
         <div class="card-meta"><span>⏱ ${esc(r.time)}</span><span>👥 ${r.servings} מנות</span><span>📊 ${esc(r.difficulty)}</span></div>
       </div>
     </div>`;
@@ -964,6 +1022,7 @@ function renderDetail(){
       <button class="act-btn act-green" id="btn-det-share">📤 שיתוף</button>
       <button class="act-btn" style="background:#6B4E8B;color:#FFF9EE" id="btn-det-calories">🔢 קלוריות (AI)</button>
       <button class="act-btn" style="background:#2A5C8B;color:#FFF9EE" id="btn-det-suggest">✨ מתכון דומה (AI)</button>
+      <button class="act-btn" style="background:#3D6B45;color:#FFF9EE" id="btn-det-chat">💬 שאל על המתכון</button>
       <button class="act-btn act-red" id="btn-det-del">🗑 מחיקה</button>
     </div>`;
   g('btn-det-back').addEventListener('click',goHome);
@@ -973,6 +1032,7 @@ function renderDetail(){
   g('btn-det-share').addEventListener('click',()=>openShare(r.id));
   g('btn-det-calories').addEventListener('click',()=>estimateCalories(r));
   g('btn-det-suggest').addEventListener('click',()=>suggestSimilarRecipe(r));
+  g('btn-det-chat').addEventListener('click',()=>openRecipeChat(r));
   g('btn-det-del').addEventListener('click',()=>openDelModal(r.id));
 
   function scaleIng(raw){
@@ -1010,6 +1070,13 @@ function renderDetail(){
   }).join('');
 
   const notes=r.notes||'';
+  const cookHistHTML = (r.cookCount&&r.cookCount>0) ? `<div style="display:flex;gap:12px;align-items:center;background:rgba(139,105,20,.06);border-radius:9px;padding:9px 13px;margin-top:14px;margin-bottom:2px">
+    <span style="font-size:18px">👨‍🍳</span>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--brown)">בישלתי ${r.cookCount} פעם${r.cookCount>1?'ים':''}</div>
+      ${r.lastCooked?`<div style="font-size:11px;color:var(--muted)">בפעם האחרונה: ${r.lastCooked}</div>`:''}
+    </div>
+  </div>` : '';
   const notesHTML=`<div class="notes-box" id="notes-box">
     <div class="notes-title">🗒️ הערות אישיות שלי<button class="notes-edit-btn" id="btn-notes-edit">✏️ ערוך</button></div>
     <div class="notes-text" id="notes-display">${notes?esc(notes):'<span style="opacity:.5">לחץ ערוך להוספת הערה אישית...</span>'}</div>
@@ -1028,6 +1095,7 @@ function renderDetail(){
     <div style="margin-bottom:18px">${ingsHTML}</div>
     <div class="section-title"><span>📋</span> אופן הכנה <span style="font-size:11px;font-weight:400;color:var(--muted);font-family:var(--fb)">(לחץ על מספר לסימון ✓)</span></div>
     ${steps}
+    ${cookHistHTML}
     ${notesHTML}
     <div class="detail-footer">✦ ✦ ✦</div>
   </div>`;
@@ -1046,10 +1114,10 @@ function renderDetail(){
       <div class="notes-title">🗒️ הערות אישיות שלי</div>
       <textarea class="notes-textarea" id="notes-ta" placeholder="הפעם הבאה אנסה... / שינויים שעשיתי...">${esc(cur.notes||'')}</textarea>
       <button class="notes-save-btn" id="btn-notes-save">💾 שמור</button>`;
-    g('btn-notes-save').addEventListener('click',()=>{
+    g('btn-notes-save').addEventListener('click',async()=>{
       const val=g('notes-ta').value;
       S.recipes=S.recipes.map(rx=>rx.id===S.detailId?{...rx,notes:val}:rx);
-      saveState();
+      await saveState();
       const sy=g('detail-scroll').scrollTop;renderDetail();g('detail-scroll').scrollTop=sy;
     });
   });
@@ -1418,7 +1486,12 @@ function renderCookingStep(){
   const nav=g('cooking-nav');
   if(i===total-1){
     nav.innerHTML='<button class="cooking-nav-btn cooking-prev" id="cp-prev" disabled style="opacity:.35">← הקודם</button><button class="cooking-done-btn" id="cp-done">✓ סיימתי לבשל!</button>';
-    g('cp-done').addEventListener('click',closeCookingMode);
+    g('cp-done').addEventListener('click',()=>{
+      // Increment cook count
+      S.recipes=S.recipes.map(r=>r.id===S.cookingRecipeId?{...r,cookCount:(r.cookCount||0)+1,lastCooked:new Date().toLocaleDateString('he-IL')}:r);
+      saveState();
+      closeCookingMode();
+    });
   } else {
     nav.innerHTML=`<button class="cooking-nav-btn cooking-prev" id="cp-prev"${i===0?' disabled style="opacity:.35"':''}>← הקודם</button><button class="cooking-nav-btn cooking-next" id="cp-next">הבא ←</button>`;
     g('cp-next').addEventListener('click',()=>{S.cookingStepIdx++;renderCookingStep();});
@@ -1792,6 +1865,103 @@ async function checkAndUseCredit(actionName){
   }
   return await useCredit();
 }
+
+// ══════════════════════════════════════════════════════════════
+//  DARK MODE
+// ══════════════════════════════════════════════════════════════
+function initDarkMode(){
+  const saved = localStorage.getItem('darkMode');
+  if(saved === '1') enableDark();
+}
+function enableDark(){
+  document.body.classList.add('dark-mode');
+  const btn = document.getElementById('btn-nav-darkmode');
+  if(btn) btn.textContent = '☀️';
+  localStorage.setItem('darkMode','1');
+}
+function disableDark(){
+  document.body.classList.remove('dark-mode');
+  const btn = document.getElementById('btn-nav-darkmode');
+  if(btn) btn.textContent = '🌙';
+  localStorage.setItem('darkMode','0');
+}
+g('btn-nav-darkmode').addEventListener('click',()=>{
+  document.body.classList.contains('dark-mode') ? disableDark() : enableDark();
+});
+initDarkMode();
+
+// ══════════════════════════════════════════════════════════════
+//  RECIPE CHAT
+// ══════════════════════════════════════════════════════════════
+let _chatRecipe = null;
+let _chatHistory = [];
+
+function openRecipeChat(r){
+  _chatRecipe = r;
+  _chatHistory = [];
+  g('chat-messages').innerHTML = '';
+  const welcome = document.createElement('div');
+  welcome.className = 'chat-msg ai';
+  welcome.textContent = 'שלום! אני כאן לעזור עם המתכון "'+r.title+'". שאל אותי כל שאלה — החלפת מצרכים, טיפים, שינויים ועוד!';
+  g('chat-messages').appendChild(welcome);
+  g('chat-modal').classList.add('show');
+  g('chat-input').focus();
+}
+
+async function sendChatMessage(){
+  const input = g('chat-input');
+  const question = input.value.trim();
+  if(!question) return;
+  
+  const ok = await checkAndUseCredit('צ'אט');
+  if(!ok) return;
+
+  // Add user message
+  const userMsg = document.createElement('div');
+  userMsg.className = 'chat-msg user';
+  userMsg.textContent = question;
+  g('chat-messages').appendChild(userMsg);
+  input.value = '';
+
+  // Add loading
+  const loadMsg = document.createElement('div');
+  loadMsg.className = 'chat-msg ai';
+  loadMsg.textContent = '...';
+  g('chat-messages').appendChild(loadMsg);
+  g('chat-messages').scrollTop = g('chat-messages').scrollHeight;
+
+  let ingsText = '';
+  if(_chatRecipe.ingredientGroups&&_chatRecipe.ingredientGroups.length){
+    _chatRecipe.ingredientGroups.forEach(g2=>g2.items.forEach(i=>{ingsText+=i+'\n';}));
+  } else { (_chatRecipe.ingredients||[]).forEach(i=>{ingsText+=i+'\n';}); }
+
+  _chatHistory.push({role:'user', content: question});
+
+  try {
+    const res = await fetch('https://reciep-proxy.giladsapir90.workers.dev/', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:400,
+        system: `אתה עוזר בישול מועיל. המתכון הוא: ${_chatRecipe.title}. מצרכים: ${ingsText}. ענה בעברית בקצרה ובאופן מעשי.`,
+        messages: _chatHistory
+      })
+    });
+    const data = await res.json();
+    const answer = data.content ? data.content.map(c=>c.text||'').join('') : 'שגיאה';
+    _chatHistory.push({role:'assistant', content: answer});
+    loadMsg.textContent = answer;
+  } catch(err) {
+    loadMsg.textContent = 'שגיאת רשת — נסה שוב';
+  }
+  g('chat-messages').scrollTop = g('chat-messages').scrollHeight;
+}
+
+g('btn-chat-close').addEventListener('click',()=>{g('chat-modal').classList.remove('show');});
+g('chat-modal').addEventListener('click',e=>{if(e.target===g('chat-modal'))g('chat-modal').classList.remove('show');});
+g('chat-send').addEventListener('click', sendChatMessage);
+g('chat-input').addEventListener('keydown', e=>{if(e.key==='Enter') sendChatMessage();});
 
 // PWA Service Worker
 if('serviceWorker' in navigator){
