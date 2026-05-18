@@ -1816,11 +1816,20 @@ function openCreditsModal(){
     window.paypal.Buttons({
       style: { layout:'vertical', color:'gold', shape:'rect', label:'pay', height:40 },
       createOrder: async () => {
-        const res = await fetch('https://reciep-proxy.giladsapir90.workers.dev/paypal-create-order', {
-          method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'
-        });
-        const data = await res.json();
-        return data.id;
+        try {
+          const res = await fetch('https://reciep-proxy.giladsapir90.workers.dev/paypal-create-order', {
+            method:'POST', headers:{'Content-Type':'application/json'}, body:'{}'
+          });
+          const data = await res.json();
+          if(!data.id) {
+            g('credits-msg').textContent = '❌ שגיאה: ' + (data.error||JSON.stringify(data));
+            throw new Error('No order ID: ' + JSON.stringify(data));
+          }
+          return data.id;
+        } catch(e) {
+          g('credits-msg').textContent = '❌ שגיאה ביצירת הזמנה';
+          throw e;
+        }
       },
       onApprove: async (data) => {
         g('credits-msg').textContent = '⏳ מאמת תשלום...';
