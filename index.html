@@ -798,6 +798,23 @@ function enterApp(){
   renderHome();
   updateCreditsDisplay();
   hideLoading();
+  // Check if returned from PayPal payment
+  checkPaymentReturn();
+}
+
+async function checkPaymentReturn(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('payment') === 'success'){
+    // Remove param from URL
+    history.replaceState({}, '', window.location.pathname);
+    // Add 100 credits
+    S.aiCredits = (S.aiCredits || 0) + 100;
+    await window._fbSetCredits(_fbUid, S.aiCredits);
+    updateCreditsDisplay();
+    setTimeout(()=>{
+      alert('✅ התשלום התקבל! נוספו 100 קרדיטים לחשבונך.');
+    }, 500);
+  }
 }
 function doLogout(){
   releaseWakeLock();
@@ -1819,7 +1836,7 @@ function openCreditsModal(){
 // PayPal payment button
 g('btn-paypal-pay').addEventListener('click', ()=>{
   // Open PayPal payment page
-  const paypalUrl = 'https://paypal.me/giladsapir90/1';
+  const paypalUrl = 'https://www.paypal.com/ncp/payment/MZQ9TY4FQMXA4';
   window.open(paypalUrl, '_blank');
   g('credits-msg').textContent = '⏳ לאחר התשלום לחץ על כפתור האישור';
   g('btn-credits-verify').style.display = 'block';
