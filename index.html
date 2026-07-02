@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0073)file:///C:/Users/%D7%92%D7%9C%D7%A2%D7%93/Downloads/recipe-book-v6_1.html -->
+<html lang="he" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#2C1810">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="מתכונים">
-<link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="file:///C:/Users/%D7%92%D7%9C%D7%A2%D7%93/Downloads/manifest.json">
+<link rel="apple-touch-icon" href="file:///C:/Users/%D7%92%D7%9C%D7%A2%D7%93/Downloads/icon-192.png">
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -84,8 +84,8 @@ document.dispatchEvent(new Event('fb-ready'));
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#3A2210">
 <title>ספר המתכונים</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Varela+Round&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./index_files/css2" rel="stylesheet">
 <style>
 :root{
   --bg:#FFF8F0;--cream:#FFFFFF;--border:#FFD4A8;
@@ -109,8 +109,7 @@ body.dark-mode{
 html,body{height:100%;background:var(--dark);overflow:hidden;}
 body{font-family:var(--fb);background:var(--bg);}
 #app{max-width:480px;margin:0 auto;height:100vh;height:100dvh;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;position:relative;}
-.page{display:none;flex-direction:column;height:100%;overflow:hidden;opacity:0;transition:opacity .18s ease;}.page.active{opacity:1;}
-.page.active{display:flex;}
+.page{display:none;flex-direction:column;height:100%;overflow:hidden;}.page.active{display:flex;animation:fadeSlide .2s ease;}
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .scroll-area::-webkit-scrollbar{width:3px;}
 .scroll-area::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
@@ -448,25 +447,7 @@ body{font-family:var(--fb);background:var(--bg);}
 <body>
 
 <!-- LOADING SCREEN -->
-<div id="loading-screen" style="position:fixed;inset:0;background:linear-gradient(150deg,#3D2314 0%,#6B3520 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .5s">
-  <div id="loading-pot" style="animation:potBounce 1s ease-in-out infinite">
-  <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <ellipse cx="40" cy="56" rx="26" ry="14" fill="#6B3520"/>
-    <rect x="16" y="38" width="48" height="20" rx="2" fill="#C97D5A"/>
-    <ellipse cx="40" cy="38" rx="26" ry="10" fill="#D4906A"/>
-    <ellipse cx="40" cy="30" rx="24" ry="8" fill="#C97D5A"/>
-    <ellipse cx="40" cy="30" rx="22" ry="6" fill="#D4906A"/>
-    <circle cx="40" cy="24" r="5" fill="#D4703A"/>
-    <rect x="8" y="40" width="10" height="12" rx="5" fill="#6B3520"/>
-    <rect x="62" y="40" width="10" height="12" rx="5" fill="#6B3520"/>
-    <path d="M32 22 Q30 16 33 12" stroke="#F5E6D3" stroke-width="2" stroke-linecap="round" fill="none"/>
-    <path d="M40 20 Q38 14 41 10" stroke="#F5E6D3" stroke-width="2" stroke-linecap="round" fill="none"/>
-    <path d="M48 22 Q46 16 49 12" stroke="#F5E6D3" stroke-width="2" stroke-linecap="round" fill="none"/>
-  </svg>
-</div>
-  <div style="color:#C4A882;font-family:'Frank Ruhl Libre',serif;font-size:18px;margin-top:16px;letter-spacing:2px">ספר המתכונים שלי</div>
-  <div style="color:#8B6914;font-size:12px;margin-top:8px;letter-spacing:1px;font-family:'Varela Round',sans-serif">טוען...</div>
-</div>
+
 
 <div id="app">
 
@@ -479,7 +460,7 @@ body{font-family:var(--fb);background:var(--bg);}
     <div id="login-form-area">
       <div style="text-align:center;margin-bottom:18px;font-size:13px;color:var(--muted);font-style:italic">כניסה עם חשבון Google שלך</div>
       <button class="login-btn" id="btn-google-login" style="display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;color:#3c4043;border:1.5px solid #dadce0;font-size:15px;font-weight:600;padding:13px">
-        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
         כניסה עם Google
       </button>
       <div class="login-err" id="login-err" style="margin-top:12px"></div>
@@ -519,13 +500,13 @@ body{font-family:var(--fb);background:var(--bg);}
   </div>
   <div style="margin-top:-28px;height:32px;background:var(--bg);border-radius:28px 28px 0 0;position:relative;z-index:2;flex-shrink:0"></div>
   <div class="nav">
-    <button class="nav-btn active" id="btn-nav-home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9.5L12 4l8 5.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"/><path d="M9 19v-6h6v6"/></svg><span>מתכונים</span></button>
-    <button class="nav-btn" id="btn-nav-add"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><span>חדש</span></button>
-    <button class="nav-btn" id="btn-nav-cats"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>קטגוריות</span></button>
-    <button class="nav-btn" id="btn-nav-backup"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 22a10 10 0 0 1-10-10"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4"/><circle cx="12" cy="12" r="3"/></svg><span>גיבוי</span></button>
-    <button class="nav-btn" id="btn-nav-shareapp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span>שתף</span></button>
-    <button class="nav-btn" id="btn-nav-credits"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><span id="nav-credits-count">?</span></button>
-    <button class="nav-btn" id="btn-nav-darkmode"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg><span>מצב</span></button>
+    <button class="nav-btn active" id="btn-nav-home"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9.5L12 4l8 5.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1z"></path><path d="M9 19v-6h6v6"></path></svg><span>מתכונים</span></button>
+    <button class="nav-btn" id="btn-nav-add"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg><span>חדש</span></button>
+    <button class="nav-btn" id="btn-nav-cats"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg><span>קטגוריות</span></button>
+    <button class="nav-btn" id="btn-nav-backup"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 1 10 10"></path><path d="M12 22a10 10 0 0 1-10-10"></path><path d="M12 2v4m0 12v4M2 12h4m12 0h4"></path><circle cx="12" cy="12" r="3"></circle></svg><span>גיבוי</span></button>
+    <button class="nav-btn" id="btn-nav-shareapp"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg><span>שתף</span></button>
+    <button class="nav-btn" id="btn-nav-credits"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg><span id="nav-credits-count">?</span></button>
+    <button class="nav-btn" id="btn-nav-darkmode"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg><span>מצב</span></button>
   </div>
   <div class="search-bar">
     <input class="search-input" id="search-input" placeholder="🔍  חיפוש מתכון, תגית, מצרך...">
@@ -667,8 +648,7 @@ body{font-family:var(--fb);background:var(--bg);}
     <div class="modal-title">💬 שאל על המתכון</div>
     <div id="chat-messages" style="flex:1;overflow-y:auto;margin:10px 0;display:flex;flex-direction:column;gap:8px;max-height:300px;min-height:80px"></div>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <input id="chat-input" type="text" placeholder="למשל: במה אפשר להחליף את החמאה?" 
-        style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:13px;color:var(--text);background:var(--cream);direction:rtl" />
+      <input id="chat-input" type="text" placeholder="למשל: במה אפשר להחליף את החמאה?" style="flex:1;padding:8px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--fb);font-size:13px;color:var(--text);background:var(--cream);direction:rtl">
       <button id="chat-send" style="background:var(--gold);border:none;border-radius:8px;padding:8px 14px;color:#FFF9EE;cursor:pointer;font-size:16px">→</button>
     </div>
     <button class="btn-gold" id="btn-chat-close" style="margin-top:10px">סגור</button>
@@ -2033,5 +2013,6 @@ if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/my-recipes/sw.js').catch(()=>{});
 }
 </script>
-</body>
-</html>
+
+
+</body></html>
